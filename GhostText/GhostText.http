@@ -1,0 +1,6 @@
+@GhostText_HostAddress = http://localhost:5138
+
+GET {{GhostText_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
