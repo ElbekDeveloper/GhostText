@@ -1,5 +1,6 @@
 using GhostText.Data;
 using GhostText.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace GhostText.Repositories;
 
@@ -9,7 +10,7 @@ public class MessageRepository : IMessageRepository
 
     public MessageRepository(ApplicationDbContext applicationDbContext)
     {
-        this.applicationDbContext = applicationDbContextSelectAllMessages
+        this.applicationDbContext = applicationDbContext;
     }
 
     public async Task<Message> InsertMessageAsync(Message message)
@@ -24,5 +25,12 @@ public class MessageRepository : IMessageRepository
         IQueryable<Message> messages = this.applicationDbContext.Messages;
 
         return messages;
+    }
+
+    public async Task<Message> SelectMessageById(Guid Id)
+    {
+        var result = await this.applicationDbContext.Messages.FirstOrDefaultAsync(x => x.Id == Id);
+
+        return result;
     }
 }
