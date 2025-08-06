@@ -1,4 +1,6 @@
 using GhostText.Data;
+using GhostText.Repositories;
+using GhostText.Services;
 using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
 
@@ -8,6 +10,9 @@ string connectionString = builder.Configuration.GetConnectionString("DefaultConn
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 options.UseNpgsql(connectionString));
 
+builder.Services.AddScoped<ApplicationDbContext>();
+builder.Services.AddScoped<IMessageRepository, MessageRepository>();
+builder.Services.AddScoped<IMessageService, MessageService>();
 builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 
