@@ -60,6 +60,7 @@ namespace GhostText.Services
             
             await this.messageRepository.DeleteMessageAsync(maybeMessage);
             return maybeMessage;
+            
         }
     }
 }
