@@ -6,5 +6,6 @@ namespace GhostText.Services
     public interface IMessageService
     {
         Task<Message> AddMessageAsync(Message message);
+        Task<Message> ModifyMessageAsync(Message message);
     }
 }
