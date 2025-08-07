@@ -1,5 +1,7 @@
 ﻿using GhostText.Models;
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.Threading.Tasks;
 
 namespace GhostText.Data
 {
@@ -10,6 +12,6 @@ namespace GhostText.Data
 
         { }
 
-        public DbSet<Message> Students { get; set; }
+        public DbSet<Message> Messages { get; set; }
     }
 }

@@ -1,6 +1,8 @@
 using GhostText.Data;
 using GhostText.Models;
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.Threading.Tasks;
 
 namespace GhostText.Repositories
 {
@@ -17,13 +19,14 @@ namespace GhostText.Repositories
         {
             await this.applicationDbContext.AddAsync(message);
             await this.applicationDbContext.SaveChangesAsync();
+            
             return message;
         }
 
         public async Task<Message> SelectMessageByIdAsync(Guid messageId)
-        { 
-           return await this.applicationDbContext.Students.FirstOrDefaultAsync(
-               message => message.Id == messageId);     
+        {
+            return await this.applicationDbContext.Messages.FirstOrDefaultAsync(
+                message => message.Id == messageId);
         }
     }
 }

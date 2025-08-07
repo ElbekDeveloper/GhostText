@@ -1,4 +1,6 @@
 using GhostText.Models;
+using System;
+using System.Threading.Tasks;
 
 namespace GhostText.Repositories
 {
