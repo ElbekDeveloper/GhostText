@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace GhostText.Repositories
 {
-    public class MessageRepository:IMessageRepository
+    public class MessageRepository : IMessageRepository
     {
         private readonly ApplicationDbContext applicationDbContext;
 
@@ -19,7 +19,7 @@ namespace GhostText.Repositories
         {
             await this.applicationDbContext.AddAsync(message);
             await this.applicationDbContext.SaveChangesAsync();
-            
+
             return message;
         }
 
@@ -28,6 +28,13 @@ namespace GhostText.Repositories
             return await this.applicationDbContext.Messages.FirstOrDefaultAsync(
                 message => message.Id == messageId);
         }
+
+        public async Task<Message> UpdateMessageAsync(Message message)
+        {
+            this.applicationDbContext.Entry(message).State = EntityState.Modified;
+            await this.applicationDbContext.SaveChangesAsync();
+
+            return message;
+        }
     }
 }
-
