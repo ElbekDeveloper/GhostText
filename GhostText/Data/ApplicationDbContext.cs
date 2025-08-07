@@ -1,5 +1,7 @@
 ﻿using GhostText.Models;
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.Threading.Tasks;
 
 namespace GhostText.Data
 {

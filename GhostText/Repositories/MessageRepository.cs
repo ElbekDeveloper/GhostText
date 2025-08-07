@@ -3,7 +3,7 @@ using GhostText.Data;
 using GhostText.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
-using System.Threading.Tasks;
+using System;
 
 namespace GhostText.Repositories
 {
@@ -27,6 +27,12 @@ namespace GhostText.Repositories
         public IQueryable<Message> SelectAllMessages()
         {
             return this.applicationDbContext.Messages;
+        }
+
+        public async Task<Message> SelectMessageByIdAsync(Guid messageId)
+        {
+            return await this.applicationDbContext.Messages.FirstOrDefaultAsync(
+                message => message.Id == messageId);
         }
 
         public async Task<Message> UpdateMessageAsync(Message message)
