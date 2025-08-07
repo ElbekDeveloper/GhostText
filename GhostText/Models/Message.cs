@@ -1,3 +1,5 @@
+using System;
+
 namespace GhostText.Models;
 
 public class Message
