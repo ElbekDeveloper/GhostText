@@ -1,8 +1,9 @@
+using System.Threading.Tasks;
 using GhostText.Data;
 using GhostText.Models;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
 using System;
-using System.Threading.Tasks;
 
 namespace GhostText.Repositories
 {
@@ -17,10 +18,15 @@ namespace GhostText.Repositories
 
         public async Task<Message> InsertMessageAsync(Message message)
         {
-            await this.applicationDbContext.AddAsync(message);
+            this.applicationDbContext.Entry(message).State = EntityState.Added;
             await this.applicationDbContext.SaveChangesAsync();
 
             return message;
+        }
+
+        public IQueryable<Message> SelectAllMessages()
+        {
+            return this.applicationDbContext.Messages;
         }
 
         public async Task<Message> SelectMessageByIdAsync(Guid messageId)
