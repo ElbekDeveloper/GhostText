@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using GhostText.Data;
 using GhostText.Models;
 using Microsoft.EntityFrameworkCore;
@@ -17,7 +18,7 @@ namespace GhostText.Repositories
 
         public async Task<Message> InsertMessageAsync(Message message)
         {
-            await this.applicationDbContext.AddAsync(message);
+            this.applicationDbContext.Entry(message).State = EntityState.Added;
             await this.applicationDbContext.SaveChangesAsync();
 
             return message;
