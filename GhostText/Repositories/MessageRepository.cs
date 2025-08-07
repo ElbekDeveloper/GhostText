@@ -1,6 +1,7 @@
 using GhostText.Data;
 using GhostText.Models;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace GhostText.Repositories
@@ -20,6 +21,11 @@ namespace GhostText.Repositories
             await this.applicationDbContext.SaveChangesAsync();
 
             return message;
+        }
+
+        public IQueryable<Message> SelectAllMessages()
+        {
+            return this.applicationDbContext.Messages;
         }
 
         public async Task<Message> UpdateMessageAsync(Message message)
