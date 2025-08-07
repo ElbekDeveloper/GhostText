@@ -1,7 +1,7 @@
-using GhostText.Models;
-using System.Linq;
 using System;
 using System.Threading.Tasks;
+using GhostText.Models;
+using System.Linq;
 
 namespace GhostText.Repositories
 {
@@ -11,5 +11,6 @@ namespace GhostText.Repositories
         IQueryable<Message> SelectAllMessages();
         Task<Message> SelectMessageByIdAsync(Guid massageId);
         Task<Message> UpdateMessageAsync(Message message);
+        Task<Message> DeleteMessageAsync(Message message);
     }
 }
