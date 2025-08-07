@@ -1,10 +1,9 @@
+using System;
+using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using GhostText.Data;
 using GhostText.Models;
-using Microsoft.EntityFrameworkCore;
-using System.Linq;
-using System;
-using Microsoft.EntityFrameworkCore;
 
 namespace GhostText.Repositories
 {
@@ -48,7 +47,6 @@ namespace GhostText.Repositories
         {
             this.applicationDbContext.Entry(message).State = EntityState.Deleted;
             await this.applicationDbContext.SaveChangesAsync();
-            
 
             return message;
         }
