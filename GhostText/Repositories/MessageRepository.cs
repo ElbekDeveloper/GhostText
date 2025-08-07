@@ -1,6 +1,7 @@
 using System.Threading.Tasks;
 using GhostText.Data;
 using GhostText.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace GhostText.Repositories
 {
@@ -23,7 +24,7 @@ namespace GhostText.Repositories
 
         public async Task<Message> DeleteMessageAsync(Message message)
         {
-            this.applicationDbContext.Remove(message);
+            this.applicationDbContext.Entry(message).State = EntityState.Deleted;
             await this.applicationDbContext.SaveChangesAsync();
             
             return message;
