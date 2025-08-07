@@ -1,10 +1,11 @@
 using GhostText.Data;
 using GhostText.Models;
+using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
 
 namespace GhostText.Repositories
 {
-    public class MessageRepository:IMessageRepository
+    public class MessageRepository : IMessageRepository
     {
         private readonly ApplicationDbContext applicationDbContext;
 
@@ -17,9 +18,16 @@ namespace GhostText.Repositories
         {
             await this.applicationDbContext.AddAsync(message);
             await this.applicationDbContext.SaveChangesAsync();
-            
+
+            return message;
+        }
+
+        public async Task<Message> UpdateMessageAsync(Message message)
+        {
+            this.applicationDbContext.Entry(message).State = EntityState.Modified;
+            await this.applicationDbContext.SaveChangesAsync();
+
             return message;
         }
     }
 }
-
