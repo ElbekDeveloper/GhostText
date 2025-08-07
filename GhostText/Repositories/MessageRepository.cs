@@ -16,9 +16,9 @@ namespace GhostText.Repositories
         {
             await this.applicationDbContext.AddAsync(message);
             await this.applicationDbContext.SaveChangesAsync();
+            
             return message;
         }
-
     }
 }
 
