@@ -1,5 +1,6 @@
 using GhostText.Data;
 using GhostText.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace GhostText.Repositories
 {
@@ -19,6 +20,11 @@ namespace GhostText.Repositories
             return message;
         }
 
+        public async Task<Message> SelectMessageByIdAsync(Guid messageId)
+        { 
+           return await this.applicationDbContext.Students.FirstOrDefaultAsync(
+               message => message.Id == messageId);     
+        }
     }
 }
 
