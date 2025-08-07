@@ -10,6 +10,6 @@ namespace GhostText.Data
 
         { }
 
-        public DbSet<Message> Students { get; set; }
+        public DbSet<Message> Message { get; set; }
     }
 }
