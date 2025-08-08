@@ -8,8 +8,8 @@ namespace GhostText.Services
     public interface IMessageService
     {
         Task<Message> AddMessageAsync(Message message);
-        IQueryable<Message> RetrieveAllMessages();
         Task<Message> RetrieveMessageByIdAsync(Guid messageId);
+        IQueryable<Message> RetrieveAllMessages();
         Task<Message> ModifyMessageAsync(Message message);
     }
 }
