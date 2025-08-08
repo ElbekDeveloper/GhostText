@@ -1,7 +1,6 @@
 using System;
 using GhostText.Models;
 using System.Linq;
-using System;
 using System.Threading.Tasks;
 
 namespace GhostText.Services
@@ -12,6 +11,6 @@ namespace GhostText.Services
         IQueryable<Message> RetrieveAllMessages();
         Task<Message> RetrieveMessageByIdAsync(Guid messageId);
         Task<Message> ModifyMessageAsync(Message message);
-        Task<Message> DeleteMessageAsync(Guid id);
+        Task<Message> RemoveMessageAsync(Guid id);
     }
 }

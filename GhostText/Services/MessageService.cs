@@ -55,7 +55,7 @@ namespace GhostText.Services
             return await this.messageRepository.UpdateMessageAsync(message);
         }
 
-        public async Task<Message> DeleteMessageAsync(Guid id)
+        public async Task<Message> RemoveMessageAsync(Guid id)
         {
             var existingMessage = await this.messageRepository.SelectMessageByIdAsync(id);
 
