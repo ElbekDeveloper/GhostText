@@ -22,7 +22,8 @@ namespace GhostText.Controllers
         public async Task<ActionResult<Message>> PostMessageAsync(Message message)
         {
            await this.messageService.AddMessageAsync(message);
-            return Ok(message);
+           
+           return Ok(message);
         }
     }
 }
