@@ -9,7 +9,7 @@ namespace GhostText.Repositories
     {
         Task<Message> InsertMessageAsync(Message message);
         IQueryable<Message> SelectAllMessages();
-        Task<Message> SelectMessageByIdAsync(Guid massageId);
+        Task<Message> SelectMessageByIdAsync(Guid messageId);
         Task<Message> UpdateMessageAsync(Message message);
         Task<Message> DeleteMessageAsync(Message message);
     }
