@@ -1,6 +1,6 @@
 using System;
-using System.Collections.Generic;
 using GhostText.Models;
+using System.Collections.Generic;
 using GhostText.Repositories;
 using System.Linq;
 using System.Threading.Tasks;
@@ -20,6 +20,21 @@ namespace GhostText.Services
         {
             return await this.messageRepository.InsertMessageAsync(message);
         }
+
+        public async Task<Message> ModifyMessageAsync(Message message)
+        {
+            if (message is null)
+            {
+                throw new ArgumentNullException(nameof(message), "Message cannot be null");
+            }
+
+            var existingMessage = await this.messageRepository.SelectMessageByIdAsync(message.Id);
+
+            if (existingMessage is null) { 
+                throw new KeyNotFoundException("Message not found");
+            }
+
+            return await this.messageRepository.UpdateMessageAsync(message);
 
         public async Task<Message> RetrieveMessageByIdAsync(Guid messageId)
         {
