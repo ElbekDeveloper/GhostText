@@ -1,4 +1,5 @@
-﻿using GhostText.Data;
+﻿using System.Linq;
+using GhostText.Data;
 using GhostText.Models;
 using GhostText.Services;
 using Microsoft.AspNetCore.Builder;
@@ -24,6 +25,14 @@ namespace GhostText.Controllers
            await this.messageService.AddMessageAsync(message);
            
            return Ok(message);
+        }
+
+        [HttpGet]
+        public IQueryable<Message> GetAllMessages()
+        {
+            IQueryable<Message> messages = this.messageService.RetrieveAllMessages();
+            
+            return messages;
         }
     }
 }
