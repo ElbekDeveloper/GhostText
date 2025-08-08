@@ -10,5 +10,6 @@ namespace GhostText.Services
         Task<Message> AddMessageAsync(Message message);
         IQueryable<Message> RetrieveAllMessages();
         Task<Message> RetrieveMessageByIdAsync(Guid messageId);
+        Task<Message> ModifyMessageAsync(Message message);
     }
 }
