@@ -25,10 +25,10 @@ namespace GhostText.Controllers
            return Ok(message);
         }
 
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Message>> GetMessageByIdAsync(Guid id)
+        [HttpGet("{messageId}")]
+        public async Task<ActionResult<Message>> GetMessageByIdAsync(Guid messageId)
         {
-            var message = await this.messageService.RetrieveMessageByIdAsync(id);
+            var message = await this.messageService.RetrieveMessageByIdAsync(messageId);
 
             if (message is null)
             {
