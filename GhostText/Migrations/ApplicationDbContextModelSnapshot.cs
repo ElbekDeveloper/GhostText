@@ -36,7 +36,7 @@ namespace GhostText.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Messages", (string)null);
+                    b.ToTable("Messages");
                 });
 #pragma warning restore 612, 618
         }
