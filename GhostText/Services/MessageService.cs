@@ -1,7 +1,8 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using GhostText.Models;
 using GhostText.Repositories;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace GhostText.Services
@@ -29,6 +30,10 @@ namespace GhostText.Services
             }
             
             return message;
+
+        public IQueryable<Message> RetrieveAllMessages()
+        {
+            return this.messageRepository.SelectAllMessages();
         }
     }
 }
