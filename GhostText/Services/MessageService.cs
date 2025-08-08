@@ -1,5 +1,6 @@
 ﻿using GhostText.Models;
 using GhostText.Repositories;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace GhostText.Services
@@ -16,6 +17,10 @@ namespace GhostText.Services
         public async Task<Message> AddMessageAsync(Message message)
         {
             return await this.messageRepository.InsertMessageAsync(message);
+        }
+        public IQueryable<Message> RetrieveAllMessages()
+        {
+            return this.messageRepository.SelectAllMessages();
         }
     }
 }
