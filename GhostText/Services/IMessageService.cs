@@ -1,4 +1,5 @@
-﻿using GhostText.Models;
+using System;
+using GhostText.Models;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -8,5 +9,6 @@ namespace GhostText.Services
     {
         Task<Message> AddMessageAsync(Message message);
         IQueryable<Message> RetrieveAllMessages();
+        Task<Message> RetrieveMessageByIdAsync(Guid messageId);
     }
 }

@@ -18,9 +18,16 @@ namespace GhostText.Services
         {
             return await this.messageRepository.InsertMessageAsync(message);
         }
-        public IQueryable<Message> RetrieveAllMessages()
+
+        public async Task<Message> RetrieveMessageByIdAsync(Guid messageId)
         {
-            return this.messageRepository.SelectAllMessages();
+            var message=await this.messageRepository.SelectMessageByIdAsync(messageId);
+            if (message == null)
+            {
+                throw new KeyNotFoundException($"Message with Id:{messageId} is not found");
+            }
+            
+            return message;
         }
     }
 }
