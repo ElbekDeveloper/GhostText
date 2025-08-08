@@ -30,7 +30,7 @@ namespace GhostText.Controllers
         {
             var message = await this.messageService.RetrieveMessageByIdAsync(id);
 
-            if (message == null)
+            if (message is null)
             {
                 return NotFound();
             }
