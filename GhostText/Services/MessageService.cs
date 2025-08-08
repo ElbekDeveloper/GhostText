@@ -29,6 +29,7 @@ namespace GhostText.Services
         public async Task<Message> RetrieveMessageByIdAsync(Guid messageId)
         {
             var message = await this.messageRepository.SelectMessageByIdAsync(messageId);
+
             if (message is null)
             {
                 throw new KeyNotFoundException($"Message with Id:{messageId} is not found");
