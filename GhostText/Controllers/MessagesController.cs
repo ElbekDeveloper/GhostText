@@ -1,7 +1,6 @@
-﻿using GhostText.Data;
+﻿using System;
 using GhostText.Models;
 using GhostText.Services;
-using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 
@@ -24,6 +23,19 @@ namespace GhostText.Controllers
            await this.messageService.AddMessageAsync(message);
            
            return Ok(message);
+        }
+
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Message>> GetMessageByIdAsync(Guid id)
+        {
+            var message = await this.messageService.RetrieveMessageByIdAsync(id);
+
+            if (message == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(message);
         }
     }
 }
