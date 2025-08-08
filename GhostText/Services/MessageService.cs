@@ -1,8 +1,9 @@
-﻿using GhostText.Models;
-using GhostText.Repositories;
 using System;
-using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
+using System.Collections.Generic;
+using GhostText.Models;
+using GhostText.Repositories;
 
 namespace GhostText.Services
 {
@@ -18,6 +19,23 @@ namespace GhostText.Services
         public async Task<Message> AddMessageAsync(Message message)
         {
             return await this.messageRepository.InsertMessageAsync(message);
+        }
+
+        public IQueryable<Message> RetrieveAllMessages()
+        {
+            return this.messageRepository.SelectAllMessages();
+        }
+
+        public async Task<Message> RetrieveMessageByIdAsync(Guid messageId)
+        {
+            var message = await this.messageRepository.SelectMessageByIdAsync(messageId);
+
+            if (message is null)
+            {
+                throw new KeyNotFoundException($"Message with Id:{messageId} is not found");
+            }
+
+            return message;
         }
 
         public async Task<Message> ModifyMessageAsync(Message message)
@@ -40,6 +58,7 @@ namespace GhostText.Services
         public async Task<Message> DeleteMessageAsync(Guid id)
         {
             var existingMessage = await this.messageRepository.SelectMessageByIdAsync(id);
+
             if (existingMessage is null)
             {
                 throw new KeyNotFoundException("Message not found");
