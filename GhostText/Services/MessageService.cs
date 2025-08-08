@@ -1,4 +1,6 @@
-﻿using GhostText.Models;
+using System;
+using System.Collections.Generic;
+using GhostText.Models;
 using GhostText.Repositories;
 using System.Linq;
 using System.Threading.Tasks;
@@ -18,7 +20,12 @@ namespace GhostText.Services
         {
             return await this.messageRepository.InsertMessageAsync(message);
         }
-
+        
+        public IQueryable<Message> RetrieveAllMessages()
+        {
+            return this.messageRepository.SelectAllMessages();
+        }
+        
         public async Task<Message> RetrieveMessageByIdAsync(Guid messageId)
         {
             var message=await this.messageRepository.SelectMessageByIdAsync(messageId);
@@ -28,6 +35,6 @@ namespace GhostText.Services
             }
             
             return message;
-        }
+            
     }
 }
