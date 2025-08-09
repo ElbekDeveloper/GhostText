@@ -7,7 +7,7 @@ using GhostText.Models;
 
 namespace GhostText.Repositories
 {
-    public class MessageRepository:IMessageRepository
+    public class MessageRepository : IMessageRepository
     {
         private readonly ApplicationDbContext applicationDbContext;
 
