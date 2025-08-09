@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace GhostText.Repositories
 {
-    public class TelegramUserRepository
+    public class TelegramUserRepository : ITelegramUserRepository
     {
         private readonly ApplicationDbContext applicationDbContext;
 
@@ -16,7 +16,7 @@ namespace GhostText.Repositories
 
         public async Task<TelegramUser> InsertTelegramUserAsync(TelegramUser telegramUser)
         {
-            this.applicationDbContext.TelegramUsers.Add(telegramUser);
+            this.applicationDbContext.Entry(telegramUser).State = EntityState.Added;
             await this.applicationDbContext.SaveChangesAsync();
             return telegramUser;
         }

@@ -1,20 +1,21 @@
 ﻿using GhostText.Models;
+using GhostText.Repositories;
 using System.Threading.Tasks;
 
 namespace GhostText.Services
 {
     public class TelegramUserService : ITelegramUserService
     {
-        private readonly ITelegramUserService telegramUserRepository;
+        private readonly ITelegramUserRepository telegramUserRepository;
 
-        public TelegramUserService(ITelegramUserService telegramUserRepository)
+        public TelegramUserService(ITelegramUserRepository telegramUserRepository)
         {
             this.telegramUserRepository = telegramUserRepository;
         }
 
         public async Task<TelegramUser> AddTelegramUserAsync(TelegramUser telegramUser)
         {
-            return await this.telegramUserRepository.AddTelegramUserAsync(telegramUser);
+            return await this.telegramUserRepository.InsertTelegramUserAsync(telegramUser);
         }
     }
 }
