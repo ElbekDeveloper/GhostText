@@ -37,5 +37,18 @@ namespace GhostText.Controllers
 
             return Ok(message);
         }
+
+        [HttpDelete("{messageId}")]
+        public async Task<ActionResult<Message>> DeleteMessageByIdAsync(Guid messageId)
+        {
+            var message = await this.messageService.RemoveMessageByIdAsync(messageId);
+
+            if(message is null)
+            {
+                return NotFound();
+            }
+
+            return Ok(message);
+        }
     }
 }
