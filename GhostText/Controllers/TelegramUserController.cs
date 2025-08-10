@@ -1,6 +1,8 @@
 ﻿using GhostText.Models;
 using GhostText.Repositories;
+using GhostText.Services;
 using Microsoft.AspNetCore.Mvc;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace GhostText.Controllers
@@ -9,18 +11,26 @@ namespace GhostText.Controllers
     [Route("api/[controller]")]
     public class TelegramUserController : ControllerBase
     {
-        private readonly ITelegramUserRepository AddTelegramUserAsync;
+        private readonly ITelegramUserService telegramUser;
 
-        public TelegramUserController(ITelegramUserRepository addTelegramUserAsync)
+        public TelegramUserController(ITelegramUserService telegramUser)
         {
-            this.AddTelegramUserAsync = addTelegramUserAsync;
+            this.telegramUser = telegramUser;
         }
 
         [HttpPost]
         public async Task<ActionResult<TelegramUser>> PostTelegramUserAsync(TelegramUser telegramUser)
         {
-            await this.AddTelegramUserAsync.InsertTelegramUserAsync(telegramUser);
+            await this.telegramUser.AddTelegramUserAsync(telegramUser);
             return Ok(telegramUser);
+        }
+
+        [HttpGet]
+        public IQueryable<TelegramUser> GetAllTelegramUsers()
+        {
+            IQueryable<TelegramUser> telegramUsers = this.telegramUser.RetrieveAllTelegramUser();
+
+            return telegramUsers;
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using GhostText.Models;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace GhostText.Services
@@ -6,5 +7,6 @@ namespace GhostText.Services
     public interface ITelegramUserService
     {
         Task<TelegramUser> AddTelegramUserAsync(TelegramUser telegramUser);
+        IQueryable<TelegramUser> RetrieveAllTelegramUser();
     }
 }

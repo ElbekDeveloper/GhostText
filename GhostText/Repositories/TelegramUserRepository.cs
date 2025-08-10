@@ -1,6 +1,7 @@
 ﻿using GhostText.Data;
 using GhostText.Models;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace GhostText.Repositories
@@ -19,6 +20,11 @@ namespace GhostText.Repositories
             this.applicationDbContext.Entry(telegramUser).State = EntityState.Added;
             await this.applicationDbContext.SaveChangesAsync();
             return telegramUser;
+        }
+
+        public IQueryable<TelegramUser> SelectAllTelegramUser()
+        {
+            return this.applicationDbContext.TelegramUsers;
         }
     }
 }
