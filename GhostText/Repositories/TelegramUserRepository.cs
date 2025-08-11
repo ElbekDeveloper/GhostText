@@ -1,4 +1,5 @@
-﻿using GhostText.Data;
+﻿using System;
+using GhostText.Data;
 using GhostText.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
@@ -25,6 +26,12 @@ namespace GhostText.Repositories
         public IQueryable<TelegramUser> SelectAllTelegramUser()
         {
             return this.applicationDbContext.TelegramUsers;
+        }
+
+        public async Task<TelegramUser> SelectTelegramUserById(Guid userId)
+        {
+            return await this.applicationDbContext.TelegramUsers.FirstOrDefaultAsync(
+                user => user.Id == userId);
         }
     }
 }
