@@ -2,7 +2,6 @@
 using System;
 using System.Linq;
 using GhostText.Data;
-
 using GhostText.Models;
 using GhostText.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -34,14 +33,14 @@ namespace GhostText.Controllers
         public IQueryable<Message> GetAllMessages()
         {
             IQueryable<Message> messages = this.messageService.RetrieveAllMessages();
-            
+
             return messages;
+        }
 
         [HttpGet("{messageId}")]
         public async Task<ActionResult<Message>> GetMessageByIdAsync(Guid messageId)
         {
             var message = await this.messageService.RetrieveMessageByIdAsync(messageId);
-
             if (message is null)
             {
                 return NotFound();
