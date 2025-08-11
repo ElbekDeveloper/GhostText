@@ -1,5 +1,4 @@
 ﻿using GhostText.Models;
-using GhostText.Repositories;
 using GhostText.Services;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
