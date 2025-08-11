@@ -37,5 +37,18 @@ namespace GhostText.Services
             
             return telegramUser;
         }
+
+        public async Task<TelegramUser> RemoveTelegramUserAsync(Guid userId)
+        {
+            var telegramUser =
+                await this.telegramUserRepository.SelectTelegramUserById(userId);
+            if (telegramUser is null)
+            {
+                throw new KeyNotFoundException($"Telegram User with Id: {userId} not found");
+            }
+
+            return await this.telegramUserRepository.DeleteTelegramUserAsync(telegramUser);
+
+        }
     }
 }
