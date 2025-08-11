@@ -9,7 +9,6 @@ namespace GhostText.Services
     {
         Task<TelegramUser> AddTelegramUserAsync(TelegramUser telegramUser);
         IQueryable<TelegramUser> RetrieveAllTelegramUser();
-        
         Task<TelegramUser> RetrieveTelegramUserByIdAsync(Guid userId);
     }
 }
