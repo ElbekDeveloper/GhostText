@@ -23,5 +23,20 @@ namespace GhostText.Controllers
             await this.telegramUserService.AddTelegramUserAsync(telegramUser);
             return Ok(telegramUser);
         }
+
+        [HttpPut]
+        public async Task<ActionResult<TelegramUser>> PutTelegramUserAsync(TelegramUser telegramUser)
+        {
+            if (telegramUser == null)
+            {
+                return BadRequest("Telegram user cannot be null.");
+            }
+            var updatedUser = await this.telegramUserService.ModifyTelegramUserAsync(telegramUser);
+            if (updatedUser is null)
+            {
+                return NotFound("Telegram user not found.");
+            }
+            return Ok(updatedUser);
+        }
     }
 }
