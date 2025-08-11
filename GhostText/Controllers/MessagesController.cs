@@ -1,7 +1,5 @@
-
 using System;
 using System.Linq;
-using GhostText.Data;
 using GhostText.Models;
 using GhostText.Services;
 using Microsoft.AspNetCore.Mvc;
