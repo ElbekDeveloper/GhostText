@@ -12,5 +12,6 @@ namespace GhostText.Data
         { }
 
         public DbSet<Message> Messages { get; set; }
+        public DbSet<TelegramUser> TelegramUsers { get; set; }
     }
 }
