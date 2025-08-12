@@ -18,6 +18,7 @@ namespace GhostText.Repositories
         {
             this.applicationDbContext.Entry(telegramUser).State = EntityState.Added;
             await this.applicationDbContext.SaveChangesAsync();
+
             return telegramUser;
         }
     }
