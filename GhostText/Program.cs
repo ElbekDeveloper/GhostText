@@ -11,10 +11,15 @@ using Scalar.AspNetCore;
 var builder = WebApplication.CreateBuilder(args);
 
 string connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-options.UseNpgsql(connectionString));
+    options.UseNpgsql(connectionString));
+
 builder.Services.AddScoped<IMessageRepository, MessageRepository>();
 builder.Services.AddScoped<IMessageService, MessageService>();
+builder.Services.AddScoped<ITelegramUserRepository, TelegramUserRepository>();
+builder.Services.AddScoped<ITelegramUserService, TelegramUserService>();
+
 builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 
@@ -29,4 +34,5 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseAuthorization();
 app.MapControllers();
+
 app.Run();
