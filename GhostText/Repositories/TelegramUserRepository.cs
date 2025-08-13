@@ -1,4 +1,4 @@
-﻿using GhostText.Data;
+using GhostText.Data;
 using GhostText.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
