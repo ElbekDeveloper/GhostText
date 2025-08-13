@@ -21,6 +21,7 @@ namespace GhostText.Controllers
         public async Task<ActionResult<TelegramUser>> PostTelegramUserAsync(TelegramUser telegramUser)
         {
             await this.telegramUserService.AddTelegramUserAsync(telegramUser);
+
             return Ok(telegramUser);
         }
     }
