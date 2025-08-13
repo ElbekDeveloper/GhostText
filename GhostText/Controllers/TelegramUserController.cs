@@ -27,11 +27,13 @@ namespace GhostText.Controllers
         [HttpPut]
         public async Task<ActionResult<TelegramUser>> PutTelegramUserAsync(TelegramUser telegramUser)
         {
-            if (telegramUser == null)
+            if (telegramUser is null)
             {
                 return BadRequest("Telegram user cannot be null.");
             }
+
             var updatedUser = await this.telegramUserService.ModifyTelegramUserAsync(telegramUser);
+
             if (updatedUser is null)
             {
                 return NotFound("Telegram user not found.");
