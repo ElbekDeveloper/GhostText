@@ -52,7 +52,7 @@ namespace GhostText.Controllers
         {
             var message = await this.messageService.RemoveMessageByIdAsync(messageId);
 
-            if(message is null)
+            if (message is null)
             {
                 return NotFound();
             }

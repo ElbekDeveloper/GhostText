@@ -23,6 +23,11 @@ namespace GhostText.Repositories
             return telegramUser;
         }
 
+        public IQueryable<TelegramUser> SelectAllTelegramUser()
+        {
+            return this.applicationDbContext.TelegramUsers;
+        }
+
         public async Task<TelegramUser> UpdateTelegramUserAsync(TelegramUser telegramUser)
         {
             this.applicationDbContext.Entry(telegramUser).State = EntityState.Modified;
@@ -31,9 +36,5 @@ namespace GhostText.Repositories
             return telegramUser;
         }
 
-        public IQueryable<TelegramUser> SelectAllTelegramUser()
-        {
-            return this.applicationDbContext.TelegramUsers;
-        }
     }
 }
