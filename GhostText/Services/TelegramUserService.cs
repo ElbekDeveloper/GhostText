@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using GhostText.Models;
 using GhostText.Repositories;
@@ -29,7 +29,7 @@ namespace GhostText.Services
         public async Task<TelegramUser> RetrieveTelegramUserByIdAsync(Guid userId)
         {
             var telegramUser=
-                await this.telegramUserRepository.SelectTelegramUserById(userId);
+                await this.telegramUserRepository.SelectTelegramUserByIdAsync(userId);
             if (telegramUser is null)
             {
                 throw new KeyNotFoundException($"Telegram User with Id: {userId} not found");
@@ -37,8 +37,12 @@ namespace GhostText.Services
             
             return telegramUser;
         }
+          public async Task<TelegramUser> ModifyTelegramUserAsync(TelegramUser telegramUser)
+        {
+            return await this.telegramUserRepository.UpdateTelegramUserAsync(telegramUser);
+        }
 
-        public async Task<TelegramUser> RemoveTelegramUserAsync(Guid userId)
+          public async Task<TelegramUser> RemoveTelegramUserAsync(Guid userId)
         {
             var telegramUser =
                 await this.telegramUserRepository.SelectTelegramUserById(userId);
@@ -47,8 +51,6 @@ namespace GhostText.Services
                 throw new KeyNotFoundException($"Telegram User with Id: {userId} not found");
             }
 
-            return await this.telegramUserRepository.DeleteTelegramUserAsync(telegramUser);
-
-        }
+            return await this.telegramUserRepository.DeleteTelegramUserAsync(telegramUser);    
     }
 }
