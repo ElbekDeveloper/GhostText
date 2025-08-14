@@ -49,7 +49,7 @@ namespace GhostText.Controllers
                 return BadRequest("Telegram user cannot be null.");
             }
 
-            var updatedUser = await this.telegramUserService.ModifyTelegramUserAsync(telegramUser);
+            var updatedUser = await this.telegramUser.ModifyTelegramUserAsync(telegramUser);
 
             if (updatedUser is null)
             {

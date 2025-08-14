@@ -29,7 +29,7 @@ namespace GhostText.Services
         public async Task<TelegramUser> RetrieveTelegramUserByIdAsync(Guid userId)
         {
             var telegramUser=
-                await this.telegramUserRepository.SelectTelegramUserById(userId);
+                await this.telegramUserRepository.SelectTelegramUserByIdAsync(userId);
             if (telegramUser is null)
             {
                 throw new KeyNotFoundException($"Telegram User with Id: {userId} not found");
