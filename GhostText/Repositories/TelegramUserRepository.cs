@@ -34,7 +34,7 @@ namespace GhostText.Repositories
             return await this.applicationDbContext.TelegramUsers.FirstOrDefaultAsync(
                 user => user.Id == userId);
         }
-
+        
         public async Task<TelegramUser> UpdateTelegramUserAsync(TelegramUser telegramUser)
         {
             this.applicationDbContext.Entry(telegramUser).State = EntityState.Modified;
@@ -42,5 +42,12 @@ namespace GhostText.Repositories
 
             return telegramUser;
         }
+        
+        public async Task<TelegramUser> DeleteTelegramUserAsync(TelegramUser telegramUser)
+        {
+            this.applicationDbContext.Entry(telegramUser).State = EntityState.Deleted;
+            
+            return telegramUser;
+        }       
     }
 }
