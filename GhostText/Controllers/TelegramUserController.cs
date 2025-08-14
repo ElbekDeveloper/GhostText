@@ -38,8 +38,14 @@ namespace GhostText.Controllers
         [HttpGet("{userId}")]
         public async Task<ActionResult<TelegramUser>> GetTelegramUserByIdAsync(Guid userId)
         {
-            await this.telegramUser.RetrieveTelegramUserByIdAsync(userId); 
-            return Ok(telegramUser);
+           var result = await this.telegramUser.RetrieveTelegramUserByIdAsync(userId);
+
+            if (result is null)
+            {
+                return NotFound($"Telegram user with ID {userId} not found.");
+            }
+
+            return Ok(result);
         }
 
         [HttpPut]
@@ -58,6 +64,20 @@ namespace GhostText.Controllers
             }
 
             return Ok(updatedUser);
+        }
+
+
+        [HttpDelete("{telegramUserId}")]
+        public async Task<ActionResult<TelegramUser>> DeleteTelegramUserByIdAsync(Guid telegramUserId)
+        {
+            var result = await this.telegramUser.RemoveTelegramUserAsync(telegramUserId);
+
+            if (result is null)
+            {
+                return NotFound($"Telegram user with ID {telegramUserId} not found.");
+            }
+
+            return Ok(result);
         }
     }
 }

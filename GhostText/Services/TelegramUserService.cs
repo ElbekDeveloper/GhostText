@@ -46,6 +46,7 @@ namespace GhostText.Services
         {
             var telegramUser =
                 await this.telegramUserRepository.SelectTelegramUserByIdAsync(userId);
+
             if (telegramUser is null)
             {
                 throw new KeyNotFoundException($"Telegram User with Id: {userId} not found");
