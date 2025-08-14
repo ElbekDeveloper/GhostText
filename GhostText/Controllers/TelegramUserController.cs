@@ -1,4 +1,6 @@
-﻿using GhostText.Models;
+using System;
+using GhostText.Models;
+using GhostText.Repositories;
 using GhostText.Services;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq;
@@ -31,6 +33,13 @@ namespace GhostText.Controllers
             IQueryable<TelegramUser> telegramUsers = this.telegramUser.RetrieveAllTelegramUser();
 
             return telegramUsers;
+        }
+
+        [HttpGet("{userId}")]
+        public async Task<ActionResult<TelegramUser>> GetTelegramUserByIdAsync(Guid userId)
+        {
+            await this.telegramUser.RetrieveTelegramUserByIdAsync(userId); 
+            return Ok(telegramUser);
         }
 
         [HttpPut]
