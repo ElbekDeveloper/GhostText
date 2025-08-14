@@ -16,7 +16,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(connectionString));
 
 builder.Services.AddScoped<IMessageRepository, MessageRepository>();
-builder.Services.AddScoped<IMessageService, MessageService>();
+builder.Services.AddScoped<IMessageService, MessageService>();  
 builder.Services.AddScoped<ITelegramUserRepository, TelegramUserRepository>();
 builder.Services.AddScoped<ITelegramUserService, TelegramUserService>();
 
