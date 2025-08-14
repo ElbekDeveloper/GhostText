@@ -46,6 +46,7 @@ namespace GhostText.Repositories
         public async Task<TelegramUser> DeleteTelegramUserAsync(TelegramUser telegramUser)
         {
             this.applicationDbContext.Entry(telegramUser).State = EntityState.Deleted;
+            
             return telegramUser;
         }       
     }
