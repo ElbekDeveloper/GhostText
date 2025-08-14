@@ -1,5 +1,4 @@
 ﻿using GhostText.Models;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace GhostText.Repositories
@@ -8,5 +7,6 @@ namespace GhostText.Repositories
     {
         Task<TelegramUser> InsertTelegramUserAsync(TelegramUser telegramUser);
         IQueryable<TelegramUser> SelectAllTelegramUser();
+        Task<TelegramUser> UpdateTelegramUserAsync(TelegramUser telegramUser);
     }
 }

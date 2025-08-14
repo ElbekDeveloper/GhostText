@@ -23,5 +23,10 @@ namespace GhostText.Services
         {
             return this.telegramUserRepository.SelectAllTelegramUser();
         }
+
+        public async Task<TelegramUser> ModifyTelegramUserAsync(TelegramUser telegramUser)
+        {
+            return await this.telegramUserRepository.UpdateTelegramUserAsync(telegramUser);
+        }
     }
 }
