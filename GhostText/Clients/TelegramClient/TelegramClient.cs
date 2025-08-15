@@ -1,7 +1,8 @@
 ﻿using System;
-using GhostText.Models;
+using GhostText.Models.TelegramUsers;
 using System.Threading;
 using System.Threading.Tasks;
+using GhostText.Clients.TelegramClient;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;

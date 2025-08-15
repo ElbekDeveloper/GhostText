@@ -1,9 +1,9 @@
 using System;
 using System.Linq;
-using GhostText.Models;
 using GhostText.Services;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
+using GhostText.Models;
 
 namespace GhostText.Controllers
 {

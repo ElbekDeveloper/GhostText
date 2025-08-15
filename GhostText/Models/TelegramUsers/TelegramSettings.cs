@@ -1,4 +1,4 @@
-﻿namespace GhostText.Models
+﻿namespace GhostText.Models.TelegramUsers
 {
     public class TelegramSettings
     {
