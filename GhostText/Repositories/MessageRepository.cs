@@ -16,7 +16,7 @@ namespace GhostText.Repositories
             this.applicationDbContext = applicationDbContext;
         }
 
-        public async Task<Message> InsertMessageAsync(Message message)
+        public async ValueTask<Message> InsertMessageAsync(Message message)
         {
             this.applicationDbContext.Entry(message).State = EntityState.Added;
             await this.applicationDbContext.SaveChangesAsync();
@@ -29,13 +29,13 @@ namespace GhostText.Repositories
             return this.applicationDbContext.Messages;
         }
 
-        public async Task<Message> SelectMessageByIdAsync(Guid messageId)
+        public async ValueTask<Message> SelectMessageByIdAsync(Guid messageId)
         {
             return await this.applicationDbContext.Messages.FirstOrDefaultAsync(
                 message => message.Id == messageId);
         }
 
-        public async Task<Message> UpdateMessageAsync(Message message)
+        public async ValueTask<Message> UpdateMessageAsync(Message message)
         {
             this.applicationDbContext.Entry(message).State = EntityState.Modified;
             await this.applicationDbContext.SaveChangesAsync();
@@ -43,7 +43,7 @@ namespace GhostText.Repositories
             return message;
         }
 
-        public async Task<Message> DeleteMessageAsync(Message message)
+        public async ValueTask<Message> DeleteMessageAsync(Message message)
         {
             this.applicationDbContext.Entry(message).State = EntityState.Deleted;
             await this.applicationDbContext.SaveChangesAsync();

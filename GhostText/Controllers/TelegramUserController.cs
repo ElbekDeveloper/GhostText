@@ -1,6 +1,5 @@
 using System;
 using GhostText.Models;
-using GhostText.Repositories;
 using GhostText.Services;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq;
@@ -20,7 +19,7 @@ namespace GhostText.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<TelegramUser>> PostTelegramUserAsync(TelegramUser telegramUser)
+        public async ValueTask<ActionResult<TelegramUser>> PostTelegramUserAsync(TelegramUser telegramUser)
         {
             await this.telegramUser.AddTelegramUserAsync(telegramUser);
 
@@ -36,7 +35,7 @@ namespace GhostText.Controllers
         }
 
         [HttpGet("{userId}")]
-        public async Task<ActionResult<TelegramUser>> GetTelegramUserByIdAsync(Guid userId)
+        public async ValueTask<ActionResult<TelegramUser>> GetTelegramUserByIdAsync(Guid userId)
         {
            var result = await this.telegramUser.RetrieveTelegramUserByIdAsync(userId);
 
@@ -49,7 +48,7 @@ namespace GhostText.Controllers
         }
 
         [HttpPut]
-        public async Task<ActionResult<TelegramUser>> PutTelegramUserAsync(TelegramUser telegramUser)
+        public async ValueTask<ActionResult<TelegramUser>> PutTelegramUserAsync(TelegramUser telegramUser)
         {
             if (telegramUser is null)
             {
@@ -65,10 +64,9 @@ namespace GhostText.Controllers
 
             return Ok(updatedUser);
         }
-
-
+        
         [HttpDelete("{telegramUserId}")]
-        public async Task<ActionResult<TelegramUser>> DeleteTelegramUserByIdAsync(Guid telegramUserId)
+        public async ValueTask<ActionResult<TelegramUser>> DeleteTelegramUserByIdAsync(Guid telegramUserId)
         {
             var result = await this.telegramUser.RemoveTelegramUserAsync(telegramUserId);
 

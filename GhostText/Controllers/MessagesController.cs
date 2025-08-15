@@ -19,7 +19,7 @@ namespace GhostText.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<Message>> PostMessageAsync(Message message)
+        public async ValueTask<ActionResult<Message>> PostMessageAsync(Message message)
         {
            await this.messageService.AddMessageAsync(message);
            
@@ -36,7 +36,7 @@ namespace GhostText.Controllers
         }
 
         [HttpGet("{messageId}")]
-        public async Task<ActionResult<Message>> GetMessageByIdAsync(Guid messageId)
+        public async ValueTask<ActionResult<Message>> GetMessageByIdAsync(Guid messageId)
         {
             var message = await this.messageService.RetrieveMessageByIdAsync(messageId);
             if (message is null)
@@ -48,7 +48,7 @@ namespace GhostText.Controllers
         }
 
         [HttpDelete("{messageId}")]
-        public async Task<ActionResult<Message>> DeleteMessageByIdAsync(Guid messageId)
+        public async ValueTask<ActionResult<Message>> DeleteMessageByIdAsync(Guid messageId)
         {
             var message = await this.messageService.RemoveMessageByIdAsync(messageId);
 

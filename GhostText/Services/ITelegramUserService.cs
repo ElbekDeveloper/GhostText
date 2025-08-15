@@ -7,11 +7,11 @@ namespace GhostText.Services
 {
     public interface ITelegramUserService
     {
-        Task<TelegramUser> AddTelegramUserAsync(TelegramUser telegramUser);
+        ValueTask<TelegramUser> AddTelegramUserAsync(TelegramUser telegramUser);
         IQueryable<TelegramUser> RetrieveAllTelegramUser();
-        Task<TelegramUser> RetrieveTelegramUserByIdAsync(Guid userId);
-        Task<TelegramUser> ModifyTelegramUserAsync(TelegramUser telegramUser);
-        Task<TelegramUser> RemoveTelegramUserAsync(Guid userId);
+        ValueTask<TelegramUser> RetrieveTelegramUserByIdAsync(Guid userId);
+        ValueTask<TelegramUser> ModifyTelegramUserAsync(TelegramUser telegramUser);
+        ValueTask<TelegramUser> RemoveTelegramUserAsync(Guid userId);
         ValueTask<TelegramUser> EnsureTelegramUserAsync(TelegramUser telegramUser);
      }
 }
