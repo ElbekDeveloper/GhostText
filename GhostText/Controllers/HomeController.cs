@@ -1,6 +1,4 @@
-﻿using GhostText.Models;
-using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
+﻿using Microsoft.AspNetCore.Mvc;
 
 namespace GhostText.Controllers
 {
@@ -9,9 +7,7 @@ namespace GhostText.Controllers
     public class HomeController : ControllerBase
     {
         [HttpGet]
-        public IActionResult GetHome() 
-        {
-            return Content("Hello, World!");
-        }
+        public IActionResult GetHome() =>
+            Content("Hello, World!");
     }
 }

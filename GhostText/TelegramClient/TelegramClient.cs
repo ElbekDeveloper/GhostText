@@ -1,6 +1,5 @@
 ﻿using System;
 using GhostText.Models;
-using Microsoft.Extensions.Options;
 using System.Threading;
 using System.Threading.Tasks;
 using Telegram.Bot;
@@ -10,66 +9,70 @@ using Microsoft.Extensions.Configuration;
 
 namespace GhostText.TelegramClient
 {
-    public class TelegramClient
+    public class TelegramClient : ITelegramClient
     {
         private readonly TelegramSettings telegramSettings;
         private readonly TelegramBotClient botClient;
-        private readonly CancellationTokenSource cts = new CancellationTokenSource();
-        private readonly IConfiguration configuration;
+        private readonly CancellationTokenSource cancellationTokenSource;
 
-        public TelegramClient(IOptions<TelegramSettings> options, IConfiguration configuration)
+        public TelegramClient(IConfiguration configuration)
         {
-            telegramSettings = options.Value;
-            if (string.IsNullOrWhiteSpace(telegramSettings.BotToken))
-                throw new InvalidOperationException("Telegram BotToken topilmadi (configdan o‘qilmadi).");
+            this.cancellationTokenSource = new CancellationTokenSource();
+            this.telegramSettings = new TelegramSettings();
+            configuration.Bind(nameof(TelegramSettings), this.telegramSettings);
 
-            botClient = new TelegramBotClient(telegramSettings.BotToken);
-
-            this.configuration = configuration;
+            this.botClient = new TelegramBotClient(
+                token: this.telegramSettings.BotToken);
         }
-
 
         public void ListenTelegramBot()
         {
-            botClient.StartReceiving(
+            this.botClient.StartReceiving(
                 updateHandler: HandleUpdateAsync,
                 errorHandler: HandleErrorAsync,
-                cancellationToken: cts.Token
-                );
+                cancellationToken: this.cancellationTokenSource.Token);
 
             Console.WriteLine("Telegram bot ishlayapti...");
         }
 
-        private async Task HandleUpdateAsync(ITelegramBotClient bot, Update update, CancellationToken token)
+        private async Task HandleUpdateAsync(
+            ITelegramBotClient telegramBotClient, 
+            Update update, 
+            CancellationToken token)
         {
-            if (update.Type != UpdateType.Message)
+            if (update.Type is not UpdateType.Message) 
+                return;
+            
+            if (string.IsNullOrWhiteSpace(update.Message.Text)) 
                 return;
 
-            if (update.Message?.Text is null)
-                return;
-
-            var chatId = -1002766816339; // update.Message.Chat.Id;
-            var messageText = update.Message.Text;
+            string messageText = update.Message.Text;
 
             if (messageText.StartsWith("/start"))
             {
-                await bot.SendMessage(chatId, "Xush kelibsiz");
+                await telegramBotClient.SendMessage(
+                    chatId: this.telegramSettings.ChannelId,
+                    text: "Xush kelibsiz");
             }
             else
             {
-                await bot.SendMessage(chatId, $"Botdan kelgan xabar:\n\n {messageText}");
+                await telegramBotClient.SendMessage(
+                    chatId: this.telegramSettings.ChannelId,
+                    text: $"Botdan kelgan xabar:\n\n {messageText}");
             }
         }
 
-        private Task HandleErrorAsync(ITelegramBotClient bot, Exception exception, CancellationToken token)
+        private Task HandleErrorAsync(
+            ITelegramBotClient telegramBotCLient, 
+            Exception exception, 
+            CancellationToken token)
         {
             Console.WriteLine($"Error: {exception.Message}");
+
             return Task.CompletedTask;
         }
 
-        public void StopListening()
-        {
-            cts.Cancel();
-        }
+        public void StopListening() =>
+            this.cancellationTokenSource.Cancel();
     }
 }

@@ -1,43 +1,30 @@
 using GhostText.Data;
-using GhostText.Models;
 using GhostText.Repositories;
 using GhostText.Services;
 using GhostText.TelegramClient;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Scalar.AspNetCore;
 
-var builder = WebApplication.CreateBuilder(args);
-
-string connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseNpgsql(connectionString));
-
-builder.Services.AddScoped<IMessageRepository, MessageRepository>();
-builder.Services.AddScoped<IMessageService, MessageService>();  
-builder.Services.AddScoped<ITelegramUserRepository, TelegramUserRepository>();
-builder.Services.AddScoped<ITelegramUserService, TelegramUserService>();
+WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 builder.Services.AddOpenApi();
-
-// telegram bot uchun konfiguratsiya
-builder.Services.Configure<TelegramSettings>(
-    builder.Configuration.GetSection("TelegramSettings"));
-builder.Services.AddSingleton<TelegramClient>();
+builder.Services.AddDbContext<ApplicationDbContext>();
+builder.Services.AddScoped<IMessageRepository, MessageRepository>();
+builder.Services.AddScoped<IMessageService, MessageService>();
+builder.Services.AddScoped<ITelegramUserRepository, TelegramUserRepository>();
+builder.Services.AddScoped<ITelegramUserService, TelegramUserService>();
+builder.Services.AddSingleton<ITelegramClient, TelegramClient>();
 
 var app = builder.Build();
 
-// telegam botni ishga tushirish
-var telegramClient = app.Services.GetRequiredService<TelegramClient>();
-telegramClient.ListenTelegramBot();
+app.Services.GetRequiredService<ITelegramClient>()
+    .ListenTelegramBot();
 
 if (app.Environment.IsDevelopment())
-{    
+{
     app.MapOpenApi();
     app.MapScalarApiReference();
 }
