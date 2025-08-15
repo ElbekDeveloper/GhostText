@@ -18,7 +18,7 @@ builder.Services.AddScoped<ITelegramUserRepository, TelegramUserRepository>();
 builder.Services.AddScoped<ITelegramUserService, TelegramUserService>();
 builder.Services.AddSingleton<ITelegramClient, TelegramClient>();
 
-var app = builder.Build();
+WebApplication app = builder.Build();
 
 app.Services.GetRequiredService<ITelegramClient>()
     .ListenTelegramBot();
@@ -32,5 +32,4 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseAuthorization();
 app.MapControllers();
-
 app.Run();
