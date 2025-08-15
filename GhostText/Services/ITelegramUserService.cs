@@ -12,5 +12,6 @@ namespace GhostText.Services
         Task<TelegramUser> RetrieveTelegramUserByIdAsync(Guid userId);
         Task<TelegramUser> ModifyTelegramUserAsync(TelegramUser telegramUser);
         Task<TelegramUser> RemoveTelegramUserAsync(Guid userId);
+        ValueTask<TelegramUser> EnsureTelegramUserAsync(TelegramUser telegramUser);
      }
 }

@@ -4,6 +4,7 @@ using GhostText.Models;
 using GhostText.Repositories;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace GhostText.Services
 {
@@ -16,20 +17,17 @@ namespace GhostText.Services
             this.telegramUserRepository = telegramUserRepository;
         }
 
-        public async Task<TelegramUser> AddTelegramUserAsync(TelegramUser telegramUser)
-        {
-            return await this.telegramUserRepository.InsertTelegramUserAsync(telegramUser);
-        }
+        public async Task<TelegramUser> AddTelegramUserAsync(TelegramUser telegramUser) => 
+            await this.telegramUserRepository.InsertTelegramUserAsync(telegramUser);
 
-        public IQueryable<TelegramUser> RetrieveAllTelegramUser()
-        {
-            return this.telegramUserRepository.SelectAllTelegramUser();
-        }
+        public IQueryable<TelegramUser> RetrieveAllTelegramUser() =>
+            this.telegramUserRepository.SelectAllTelegramUser();
 
         public async Task<TelegramUser> RetrieveTelegramUserByIdAsync(Guid userId)
         {
-            var telegramUser =
+            TelegramUser telegramUser =
                 await this.telegramUserRepository.SelectTelegramUserByIdAsync(userId);
+
             if (telegramUser is null)
             {
                 throw new KeyNotFoundException($"Telegram User with Id: {userId} not found");
@@ -37,6 +35,7 @@ namespace GhostText.Services
 
             return telegramUser;
         }
+
         public async Task<TelegramUser> ModifyTelegramUserAsync(TelegramUser telegramUser)
         {
             return await this.telegramUserRepository.UpdateTelegramUserAsync(telegramUser);
@@ -44,7 +43,7 @@ namespace GhostText.Services
 
         public async Task<TelegramUser> RemoveTelegramUserAsync(Guid userId)
         {
-            var telegramUser =
+            TelegramUser telegramUser =
                 await this.telegramUserRepository.SelectTelegramUserByIdAsync(userId);
 
             if (telegramUser is null)
@@ -53,6 +52,16 @@ namespace GhostText.Services
             }
 
             return await this.telegramUserRepository.DeleteTelegramUserAsync(telegramUser);
+        }
+
+        public async ValueTask<TelegramUser> EnsureTelegramUserAsync(TelegramUser telegramUser)
+        {
+            TelegramUser maybeTelegramUser =
+                await this.RetrieveAllTelegramUser()
+                    .FirstOrDefaultAsync(user => 
+                        user.Id == telegramUser.Id);
+
+            return maybeTelegramUser ?? await this.AddTelegramUserAsync(telegramUser);
         }
     }
 }
