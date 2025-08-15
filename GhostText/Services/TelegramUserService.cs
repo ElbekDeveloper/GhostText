@@ -4,6 +4,8 @@ using GhostText.Models;
 using GhostText.Repositories;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+using System.Security.Cryptography.X509Certificates;
 
 namespace GhostText.Services
 {
@@ -15,17 +17,14 @@ namespace GhostText.Services
         {
             this.telegramUserRepository = telegramUserRepository;
         }
-
         public async Task<TelegramUser> AddTelegramUserAsync(TelegramUser telegramUser)
         {
             return await this.telegramUserRepository.InsertTelegramUserAsync(telegramUser);
         }
-
         public IQueryable<TelegramUser> RetrieveAllTelegramUser()
         {
             return this.telegramUserRepository.SelectAllTelegramUser();
         }
-
         public async Task<TelegramUser> RetrieveTelegramUserByIdAsync(Guid userId)
         {
             var telegramUser =
@@ -54,5 +53,20 @@ namespace GhostText.Services
 
             return await this.telegramUserRepository.DeleteTelegramUserAsync(telegramUser);
         }
+
+        public async ValueTask<TelegramUser> EnsureTelegramUserAsync(TelegramUser telegramUser)
+        {
+            var maybeTelegramUser =
+                await this.RetrieveAllTelegramUser().FirstOrDefaultAsync(user => user.Id == telegramUser.Id);
+
+            if (maybeTelegramUser is not null)
+            {
+                throw new KeyNotFoundException("bu telegram Id bilan allaqachon kirilgan !");
+            }
+            else
+            {
+                return await this.AddTelegramUserAsync(telegramUser); 
+            }
+        }        
     }
 }
