@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace GhostText.Data
 {
@@ -13,5 +14,14 @@ namespace GhostText.Data
 
         public DbSet<Message> Messages { get; set; }
         public DbSet<TelegramUser> TelegramUsers { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+            
+            modelBuilder.Entity<TelegramUser>()
+                .Property(user => user.TelegramId)
+                .IsRequired();
+        }
     }
 }
