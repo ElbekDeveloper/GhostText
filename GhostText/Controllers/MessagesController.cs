@@ -16,6 +16,10 @@ namespace GhostText.Controllers
         public MessagesController(IMessageService messageService) =>
             this.messageService = messageService;
            
+        [HttpPost]
+        public async Task<ActionResult<Message>> PostMessageAsync(Message message) =>
+            Ok(await this.messageService.AddMessageAsync(message));
+
         [HttpGet]
         public IQueryable<Message> GetAllMessages() =>
             this.messageService.RetrieveAllMessages();
@@ -25,10 +29,6 @@ namespace GhostText.Controllers
             await this.messageService.RetrieveMessageByIdAsync(messageId) is { } message 
             ? Ok(message) 
             : NotFound();
-
-        [HttpPost]
-        public async Task<ActionResult<Message>> PostMessageAsync(Message message) =>
-            Ok(await this.messageService.AddMessageAsync(message));
 
         [HttpPut("{messageId}")]
         public async Task<ActionResult<Message>> PutMessageAsync(Guid messageId, Message message)
