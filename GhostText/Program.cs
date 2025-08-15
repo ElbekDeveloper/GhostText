@@ -25,14 +25,14 @@ builder.Services.AddScoped<ITelegramUserService, TelegramUserService>();
 builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 
-// Telegram Bot Configuration
+// telegram bot uchun konfiguratsiya
 builder.Services.Configure<TelegramSettings>(
     builder.Configuration.GetSection("TelegramSettings"));
 builder.Services.AddSingleton<TelegramClient>();
 
 var app = builder.Build();
 
-// telegramClient is used to listen for incoming messages from the Telegram Bot
+// telegam botni ishga tushirish
 var telegramClient = app.Services.GetRequiredService<TelegramClient>();
 telegramClient.ListenTelegramBot();
 

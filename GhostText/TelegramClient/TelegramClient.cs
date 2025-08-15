@@ -18,7 +18,10 @@ namespace GhostText.TelegramClient
         public TelegramClient(IOptions<TelegramSettings> options)
         {
             telegramSettings = options.Value;
-            botClient = new TelegramBotClient(""); // <-- Bot tokenini bu yerga qo'shing 
+            if (string.IsNullOrWhiteSpace(telegramSettings.BotToken))
+                throw new InvalidOperationException("Telegram BotToken topilmadi (configdan o‘qilmadi).");
+
+            botClient = new TelegramBotClient(telegramSettings.BotToken);
         }
 
 
