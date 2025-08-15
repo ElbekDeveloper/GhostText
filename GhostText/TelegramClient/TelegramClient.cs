@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
+using Microsoft.Extensions.Configuration;
 
 namespace GhostText.TelegramClient
 {
@@ -14,14 +15,17 @@ namespace GhostText.TelegramClient
         private readonly TelegramSettings telegramSettings;
         private readonly TelegramBotClient botClient;
         private readonly CancellationTokenSource cts = new CancellationTokenSource();
+        private readonly IConfiguration configuration;
 
-        public TelegramClient(IOptions<TelegramSettings> options)
+        public TelegramClient(IOptions<TelegramSettings> options, IConfiguration configuration)
         {
             telegramSettings = options.Value;
             if (string.IsNullOrWhiteSpace(telegramSettings.BotToken))
                 throw new InvalidOperationException("Telegram BotToken topilmadi (configdan o‘qilmadi).");
 
             botClient = new TelegramBotClient(telegramSettings.BotToken);
+
+            this.configuration = configuration;
         }
 
 
@@ -44,7 +48,7 @@ namespace GhostText.TelegramClient
             if (update.Message?.Text is null)
                 return;
 
-            var chatId = update.Message.Chat.Id;
+            var chatId = -1002766816339; // update.Message.Chat.Id;
             var messageText = update.Message.Text;
 
             if (messageText.StartsWith("/start"))
@@ -53,7 +57,7 @@ namespace GhostText.TelegramClient
             }
             else
             {
-                await bot.SendMessage(chatId, $"Xabarni telegram kanalga yuboring: {messageText}");
+                await bot.SendMessage(chatId, $"Botdan kelgan xabar:\n\n {messageText}");
             }
         }
 
