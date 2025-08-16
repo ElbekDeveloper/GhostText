@@ -17,21 +17,21 @@ namespace GhostText.Controllers
             this.telegramUserService = telegramUser;
 
         [HttpPost]
-        public async Task<ActionResult<TelegramUser>> PostTelegramUserAsync(TelegramUser telegramUser) =>
+        public async ValueTask<ActionResult<TelegramUser>> PostTelegramUserAsync(TelegramUser telegramUser) =>
             Ok(await this.telegramUserService.AddTelegramUserAsync(telegramUser));
 
         [HttpGet]
         public ActionResult<IQueryable<TelegramUser>> GetAllTelegramUsersAsync() =>
-            Ok(this.telegramUserService.RetrieveAllTelegramUser());
+            Ok(this.telegramUserService.RetrieveAllTelegramUser().ToList());
 
         [HttpGet("{userId}")]
-        public async Task<ActionResult<TelegramUser>> GetTelegramUserByIdAsync(Guid userId) =>
+        public async ValueTask<ActionResult<TelegramUser>> GetTelegramUserByIdAsync(Guid userId) =>
            (await this.telegramUserService.RetrieveTelegramUserByIdAsync(userId)) is { } user 
             ? Ok(user) 
             : NotFound();
 
         [HttpPut("{userId}")]
-        public async Task<ActionResult<TelegramUser>> PutTelegramUserAsync(Guid userId, TelegramUser telegramUser)
+        public async ValueTask<ActionResult<TelegramUser>> PutTelegramUserAsync(Guid userId, TelegramUser telegramUser)
         {
             if (telegramUser is null)
                 return BadRequest("Telegram user cannot be null.");
@@ -46,7 +46,7 @@ namespace GhostText.Controllers
         }
 
         [HttpDelete("{telegramUserId}")]
-        public async Task<ActionResult<TelegramUser>> DeleteTelegramUserByIdAsync(Guid telegramUserId) =>
+        public async ValueTask<ActionResult<TelegramUser>> DeleteTelegramUserByIdAsync(Guid telegramUserId) =>
             (await this.telegramUserService.RemoveTelegramUserAsync(telegramUserId)) is { } user 
             ? Ok(user)
             : NoContent();

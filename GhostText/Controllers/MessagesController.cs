@@ -17,7 +17,7 @@ namespace GhostText.Controllers
             this.messageService = messageService;
            
         [HttpPost]
-        public async Task<ActionResult<Message>> PostMessageAsync(Message message) =>
+        public async ValueTask<ActionResult<Message>> PostMessageAsync(Message message) =>
             Ok(await this.messageService.AddMessageAsync(message));
 
         [HttpGet]
@@ -25,13 +25,13 @@ namespace GhostText.Controllers
             this.messageService.RetrieveAllMessages();
 
         [HttpGet("{messageId}")]
-        public async Task<ActionResult<Message>> GetMessageByIdAsync(Guid messageId) =>
+        public async ValueTask<ActionResult<Message>> GetMessageByIdAsync(Guid messageId) =>
             await this.messageService.RetrieveMessageByIdAsync(messageId) is { } message 
             ? Ok(message) 
             : NotFound();
 
         [HttpPut("{messageId}")]
-        public async Task<ActionResult<Message>> PutMessageAsync(Guid messageId, Message message)
+        public async ValueTask<ActionResult<Message>> PutMessageAsync(Guid messageId, Message message)
         {
             if (messageId != message.Id)
                 return BadRequest("Message ID does not match");
@@ -44,7 +44,7 @@ namespace GhostText.Controllers
         }
 
         [HttpDelete("{messageId}")]
-        public async Task<ActionResult<Message>> DeleteMessageByIdAsync(Guid messageId) =>
+        public async ValueTask<ActionResult<Message>> DeleteMessageByIdAsync(Guid messageId) =>
             await this.messageService.RemoveMessageByIdAsync(messageId) is { } message
             ? Ok(message) 
             : NoContent();
