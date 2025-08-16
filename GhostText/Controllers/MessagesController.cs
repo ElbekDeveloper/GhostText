@@ -40,7 +40,7 @@ namespace GhostText.Controllers
 
             return updatedMessage is not null
                 ? Ok(updatedMessage)
-                : NotFound();
+                : NotFound($"Message user with ID {messageId} not found.");
         }
 
         [HttpDelete("{messageId}")]
