@@ -14,6 +14,15 @@ namespace GhostText.Data
         public DbSet<Message> Messages { get; set; }
         public DbSet<TelegramUser> TelegramUsers { get; set; }
 
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+            
+            modelBuilder.Entity<TelegramUser>()
+                .HasIndex(user => user.TelegramId)
+                .IsUnique(true);
+        }
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             string connectionString = 
