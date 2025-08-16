@@ -16,7 +16,7 @@ namespace GhostText.Services
             this.messageRepository = messageRepository;
         }
 
-        public async Task<Message> AddMessageAsync(Message message)
+        public async ValueTask<Message> AddMessageAsync(Message message)
         {
             return await this.messageRepository.InsertMessageAsync(message);
         }
@@ -26,7 +26,7 @@ namespace GhostText.Services
             return this.messageRepository.SelectAllMessages();
         }
 
-        public async Task<Message> RetrieveMessageByIdAsync(Guid messageId)
+        public async ValueTask<Message> RetrieveMessageByIdAsync(Guid messageId)
         {
             var message = await this.messageRepository.SelectMessageByIdAsync(messageId);
             if (message is null)
@@ -38,7 +38,7 @@ namespace GhostText.Services
 
         }
 
-        public async Task<Message> ModifyMessageAsync(Message message)
+        public async ValueTask<Message> ModifyMessageAsync(Message message)
         {
             if (message is null)
             {
@@ -55,7 +55,7 @@ namespace GhostText.Services
             return await this.messageRepository.UpdateMessageAsync(message);
         }
 
-        public async Task<Message> RemoveMessageByIdAsync(Guid id)
+        public async ValueTask<Message> RemoveMessageByIdAsync(Guid id)
         {
             var existingMessage = await this.messageRepository.SelectMessageByIdAsync(id);
 

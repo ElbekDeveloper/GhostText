@@ -27,9 +27,9 @@ namespace GhostText.Controllers
         [HttpGet("{messageId}")]
         public async ValueTask<ActionResult<Message>> GetMessageByIdAsync(Guid messageId) =>
             await this.messageService.RetrieveMessageByIdAsync(messageId) is { } message 
-            ? Ok(message) 
-            : NotFound();
-
+                ? Ok(message) 
+                : NotFound();
+  
         [HttpPut("{messageId}")]
         public async ValueTask<ActionResult<Message>> PutMessageAsync(Guid messageId, Message message)
         {

@@ -16,7 +16,7 @@ namespace GhostText.Repositories
             this.applicationDbContext = applicationDbContext;
         }
 
-        public async Task<TelegramUser> InsertTelegramUserAsync(TelegramUser telegramUser)
+        public async ValueTask<TelegramUser> InsertTelegramUserAsync(TelegramUser telegramUser)
         {
             this.applicationDbContext.Entry(telegramUser).State = EntityState.Added;
             await this.applicationDbContext.SaveChangesAsync();
@@ -29,13 +29,13 @@ namespace GhostText.Repositories
             return this.applicationDbContext.TelegramUsers;
         }
 
-        public async Task<TelegramUser> SelectTelegramUserByIdAsync(Guid userId)
+        public async ValueTask<TelegramUser> SelectTelegramUserByIdAsync(Guid userId)
         {
             return await this.applicationDbContext.TelegramUsers.FirstOrDefaultAsync(
                 user => user.Id == userId);
         }
         
-        public async Task<TelegramUser> UpdateTelegramUserAsync(TelegramUser telegramUser)
+        public async ValueTask<TelegramUser> UpdateTelegramUserAsync(TelegramUser telegramUser)
         {
             this.applicationDbContext.Entry(telegramUser).State = EntityState.Modified;
             await this.applicationDbContext.SaveChangesAsync();
@@ -43,7 +43,7 @@ namespace GhostText.Repositories
             return telegramUser;
         }
         
-        public async Task<TelegramUser> DeleteTelegramUserAsync(TelegramUser telegramUser)
+        public async ValueTask<TelegramUser> DeleteTelegramUserAsync(TelegramUser telegramUser)
         {
             this.applicationDbContext.Entry(telegramUser).State = EntityState.Deleted;
             await this.applicationDbContext.SaveChangesAsync();

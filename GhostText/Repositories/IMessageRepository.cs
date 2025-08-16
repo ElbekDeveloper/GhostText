@@ -7,10 +7,10 @@ namespace GhostText.Repositories
 {
     public interface IMessageRepository
     {
-        Task<Message> InsertMessageAsync(Message message);
+        ValueTask<Message> InsertMessageAsync(Message message);
         IQueryable<Message> SelectAllMessages();
-        Task<Message> SelectMessageByIdAsync(Guid messageId);
-        Task<Message> UpdateMessageAsync(Message message);
-        Task<Message> DeleteMessageAsync(Message message);
+        ValueTask<Message> SelectMessageByIdAsync(Guid messageId);
+        ValueTask<Message> UpdateMessageAsync(Message message);
+        ValueTask<Message> DeleteMessageAsync(Message message);
     }
 }

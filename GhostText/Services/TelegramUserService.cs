@@ -17,13 +17,13 @@ namespace GhostText.Services
             this.telegramUserRepository = telegramUserRepository;
         }
 
-        public async Task<TelegramUser> AddTelegramUserAsync(TelegramUser telegramUser) => 
+        public async ValueTask<TelegramUser> AddTelegramUserAsync(TelegramUser telegramUser) => 
             await this.telegramUserRepository.InsertTelegramUserAsync(telegramUser);
 
         public IQueryable<TelegramUser> RetrieveAllTelegramUser() =>
             this.telegramUserRepository.SelectAllTelegramUser();
 
-        public async Task<TelegramUser> RetrieveTelegramUserByIdAsync(Guid userId)
+        public async ValueTask<TelegramUser> RetrieveTelegramUserByIdAsync(Guid userId)
         {
             TelegramUser telegramUser =
                 await this.telegramUserRepository.SelectTelegramUserByIdAsync(userId);
@@ -36,12 +36,12 @@ namespace GhostText.Services
             return telegramUser;
         }
 
-        public async Task<TelegramUser> ModifyTelegramUserAsync(TelegramUser telegramUser)
+        public async ValueTask<TelegramUser> ModifyTelegramUserAsync(TelegramUser telegramUser)
         {
             return await this.telegramUserRepository.UpdateTelegramUserAsync(telegramUser);
         }
 
-        public async Task<TelegramUser> RemoveTelegramUserAsync(Guid userId)
+        public async ValueTask<TelegramUser> RemoveTelegramUserAsync(Guid userId)
         {
             TelegramUser telegramUser =
                 await this.telegramUserRepository.SelectTelegramUserByIdAsync(userId);

@@ -7,10 +7,10 @@ namespace GhostText.Services
 {
     public interface IMessageService
     {
-        Task<Message> AddMessageAsync(Message message);
+        ValueTask<Message> AddMessageAsync(Message message);
         IQueryable<Message> RetrieveAllMessages();
-        Task<Message> RetrieveMessageByIdAsync(Guid messageId);
-        Task<Message> ModifyMessageAsync(Message message);
-        Task<Message> RemoveMessageByIdAsync(Guid id);
+        ValueTask<Message> RetrieveMessageByIdAsync(Guid messageId);
+        ValueTask<Message> ModifyMessageAsync(Message message);
+        ValueTask<Message> RemoveMessageByIdAsync(Guid id);
     }
 }
