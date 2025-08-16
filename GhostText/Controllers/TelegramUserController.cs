@@ -11,58 +11,42 @@ namespace GhostText.Controllers
     [Route("api/[controller]")]
     public class TelegramUserController : ControllerBase
     {
-        private readonly ITelegramUserService telegramUser;
+        private readonly ITelegramUserService telegramUserService;
 
-        public TelegramUserController(ITelegramUserService telegramUser)
-        {
-            this.telegramUser = telegramUser;
-        }
+        public TelegramUserController(ITelegramUserService telegramUser) =>
+            this.telegramUserService = telegramUser;
 
         [HttpPost]
-        public async ValueTask<ActionResult<TelegramUser>> PostTelegramUserAsync(TelegramUser telegramUser)
-        {
-            await this.telegramUser.AddTelegramUserAsync(telegramUser);
-
-            return Ok(telegramUser);
-        }
+        public async ValueTask<ActionResult<TelegramUser>> PostTelegramUserAsync(TelegramUser telegramUser) =>
+            Ok(await this.telegramUserService.AddTelegramUserAsync(telegramUser));
 
         [HttpGet]
-        public IQueryable<TelegramUser> GetAllTelegramUsers()
-        {
-            IQueryable<TelegramUser> telegramUsers = this.telegramUser.RetrieveAllTelegramUser();
-
-            return telegramUsers;
-        }
+        public ActionResult<IQueryable<TelegramUser>> GetAllTelegramUsersAsync() =>
+            Ok(this.telegramUserService.RetrieveAllTelegramUser().ToList());
 
         [HttpGet("{userId}")]
-        public async ValueTask<ActionResult<TelegramUser>> GetTelegramUserByIdAsync(Guid userId)
-        {
-           var result = await this.telegramUser.RetrieveTelegramUserByIdAsync(userId);
-
-            if (result is null)
-            {
-                return NotFound($"Telegram user with ID {userId} not found.");
-            }
-
-            return Ok(result);
-        }
+        public async ValueTask<ActionResult<TelegramUser>> GetTelegramUserByIdAsync(Guid userId) =>
+           (await this.telegramUserService.RetrieveTelegramUserByIdAsync(userId)) is { } user 
+            ? Ok(user) 
+            : NotFound()
 
         [HttpPut]
         public async ValueTask<ActionResult<TelegramUser>> PutTelegramUserAsync(TelegramUser telegramUser)
+        
+
+        [HttpPut("{userId}")]
+        public async ValueTask<ActionResult<TelegramUser>> PutTelegramUserAsync(Guid userId, TelegramUser telegramUser)
         {
             if (telegramUser is null)
-            {
                 return BadRequest("Telegram user cannot be null.");
-            }
 
-            var updatedUser = await this.telegramUser.ModifyTelegramUserAsync(telegramUser);
+            telegramUser.Id = userId;
 
-            if (updatedUser is null)
-            {
-                return NotFound("Telegram user not found.");
-            }
+            TelegramUser updatedUser = await this.telegramUserService.ModifyTelegramUserAsync(telegramUser);
 
-            return Ok(updatedUser);
+            return updatedUser is not null
+                ? Ok(updatedUser)
+                : NotFound($"Telegram user with ID {userId} not found.");
         }
         
         [HttpDelete("{telegramUserId}")]
@@ -77,5 +61,11 @@ namespace GhostText.Controllers
 
             return Ok(result);
         }
+
+        [HttpDelete("{telegramUserId}")]
+        public async ValueTask<ActionResult<TelegramUser>> DeleteTelegramUserByIdAsync(Guid telegramUserId) =>
+            (await this.telegramUserService.RemoveTelegramUserAsync(telegramUserId)) is { } user 
+            ? Ok(user)
+            : NoContent();
     }
 }

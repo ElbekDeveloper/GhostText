@@ -1,9 +1,9 @@
 using System;
 using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
 using GhostText.Models;
 using GhostText.Services;
-using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
 
 namespace GhostText.Controllers
 {
@@ -13,27 +13,17 @@ namespace GhostText.Controllers
     {
         private readonly IMessageService messageService;
 
-        public MessagesController(IMessageService messageService)
-        {
+        public MessagesController(IMessageService messageService) =>
             this.messageService = messageService;
-        }
-
-        [HttpPost]
-        public async ValueTask<ActionResult<Message>> PostMessageAsync(Message message)
-        {
-           await this.messageService.AddMessageAsync(message);
+     }
            
-           return Ok(message);
-        }
-
+        [HttpPost]
+        public async ValueTask<ActionResult<Message>> PostMessageAsync(Message message) =>
+            Ok(await this.messageService.AddMessageAsync(message));
 
         [HttpGet]
-        public IQueryable<Message> GetAllMessages()
-        {
-            IQueryable<Message> messages = this.messageService.RetrieveAllMessages();
-
-            return messages;
-        }
+        public IQueryable<Message> GetAllMessages() =>
+            this.messageService.RetrieveAllMessages();
 
         [HttpGet("{messageId}")]
         public async ValueTask<ActionResult<Message>> GetMessageByIdAsync(Guid messageId)
@@ -46,18 +36,24 @@ namespace GhostText.Controllers
 
             return Ok(message);
         }
+  
+        [HttpPut("{messageId}")]
+        public async ValueTask<ActionResult<Message>> PutMessageAsync(Guid messageId, Message message)
+        {
+            if (messageId != message.Id)
+                return BadRequest("Message ID does not match");
+
+            var updatedMessage = await this.messageService.ModifyMessageAsync(message);
+
+            return updatedMessage is not null
+                ? Ok(updatedMessage)
+                : NotFound($"Message user with ID {messageId} not found.");
+        }
 
         [HttpDelete("{messageId}")]
-        public async ValueTask<ActionResult<Message>> DeleteMessageByIdAsync(Guid messageId)
-        {
-            var message = await this.messageService.RemoveMessageByIdAsync(messageId);
-
-            if (message is null)
-            {
-                return NotFound();
-            }
-
-            return Ok(message);
-        }
+        public async ValueTask<ActionResult<Message>> DeleteMessageByIdAsync(Guid messageId) =>
+            await this.messageService.RemoveMessageByIdAsync(messageId) is { } message
+            ? Ok(message) 
+            : NoContent();
     }
 }
