@@ -12,13 +12,19 @@ namespace GhostText.Services
     {
         private readonly ITelegramUserRepository telegramUserRepository;
 
-        public TelegramUserService(ITelegramUserRepository telegramUserRepository)
-        {
+        public TelegramUserService(ITelegramUserRepository telegramUserRepository) =>
             this.telegramUserRepository = telegramUserRepository;
-        }
 
-        public async ValueTask<TelegramUser> AddTelegramUserAsync(TelegramUser telegramUser) => 
-            await this.telegramUserRepository.InsertTelegramUserAsync(telegramUser);
+        public async ValueTask<TelegramUser> AddTelegramUserAsync(TelegramUser telegramUser) 
+        {
+            if (telegramUser is null)
+                throw new ArgumentNullException(nameof(telegramUser), "TelegramUser cannot be null.");
+
+            if (string.IsNullOrWhiteSpace(telegramUser.UserName))
+                throw new ArgumentException("Username cannot be empty.");
+
+            return await this.telegramUserRepository.InsertTelegramUserAsync(telegramUser);
+        } 
 
         public IQueryable<TelegramUser> RetrieveAllTelegramUser() =>
             this.telegramUserRepository.SelectAllTelegramUser();
@@ -29,9 +35,7 @@ namespace GhostText.Services
                 await this.telegramUserRepository.SelectTelegramUserByIdAsync(userId);
 
             if (telegramUser is null)
-            {
                 throw new KeyNotFoundException($"Telegram User with Id: {userId} not found");
-            }
 
             return telegramUser;
         }
@@ -53,9 +57,7 @@ namespace GhostText.Services
                 await this.telegramUserRepository.SelectTelegramUserByIdAsync(userId);
 
             if (telegramUser is null)
-            {
                 throw new KeyNotFoundException($"Telegram User with Id: {userId} not found");
-            }
 
             return await this.telegramUserRepository.DeleteTelegramUserAsync(telegramUser);
         }
