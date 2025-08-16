@@ -11,58 +11,57 @@ namespace GhostText.Services
     {
         private readonly IMessageRepository messageRepository;
 
-        public MessageService(IMessageRepository messageRepository)
-        {
+        public MessageService(IMessageRepository messageRepository) =>
             this.messageRepository = messageRepository;
-        }
 
         public async ValueTask<Message> AddMessageAsync(Message message)
         {
+            if (string.IsNullOrWhiteSpace(message.Text))
+                throw new ArgumentException("Message text cannot be empty.");
+
+            message.CreateDate = DateTime.UtcNow;
+
             return await this.messageRepository.InsertMessageAsync(message);
         }
 
-        public IQueryable<Message> RetrieveAllMessages()
-        {
-            return this.messageRepository.SelectAllMessages();
-        }
+        public IQueryable<Message> RetrieveAllMessages() =>
+            this.messageRepository.SelectAllMessages();
 
         public async ValueTask<Message> RetrieveMessageByIdAsync(Guid messageId)
         {
-            var message = await this.messageRepository.SelectMessageByIdAsync(messageId);
+            if (messageId == Guid.Empty)
+                throw new ArgumentException("MessageId cannot be empty.");
+
+            Message message = await this.messageRepository.SelectMessageByIdAsync(messageId);
+
             if (message is null)
-            {
                 throw new KeyNotFoundException($"Message with Id:{messageId} is not found");
-            }
 
             return message;
-
         }
 
         public async ValueTask<Message> ModifyMessageAsync(Message message)
         {
             if (message is null)
-            {
                 throw new ArgumentNullException(nameof(message), "Message cannot be null");
-            }
 
-            var existingMessage = await this.messageRepository.SelectMessageByIdAsync(message.Id);
+            Message existingMessage = await this.messageRepository.SelectMessageByIdAsync(message.Id);
 
             if (existingMessage is null)
-            {
-                throw new KeyNotFoundException("Message not found");
-            }
+                throw new KeyNotFoundException($"Message with Id {message.Id} not found.");
 
             return await this.messageRepository.UpdateMessageAsync(message);
         }
 
-        public async ValueTask<Message> RemoveMessageByIdAsync(Guid id)
+        public async ValueTask<Message> RemoveMessageByIdAsync(Guid messageId)
         {
-            var existingMessage = await this.messageRepository.SelectMessageByIdAsync(id);
+            if (messageId == Guid.Empty)
+                throw new ArgumentException("Message Id cannot be empty.");
+
+            Message existingMessage = await this.messageRepository.SelectMessageByIdAsync(messageId);
 
             if (existingMessage is null)
-            {
                 throw new KeyNotFoundException("Message not found");
-            }
 
             return await this.messageRepository.DeleteMessageAsync(existingMessage);
         }

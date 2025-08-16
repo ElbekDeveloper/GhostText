@@ -11,29 +11,24 @@ namespace GhostText.Repositories
     {
         private readonly ApplicationDbContext applicationDbContext;
 
-        public MessageRepository(ApplicationDbContext applicationDbContext)
-        {
+        public MessageRepository(ApplicationDbContext applicationDbContext) =>
             this.applicationDbContext = applicationDbContext;
-        }
 
         public async ValueTask<Message> InsertMessageAsync(Message message)
         {
-            this.applicationDbContext.Entry(message).State = EntityState.Added;
+            await this.applicationDbContext.Messages.AddAsync(message);
             await this.applicationDbContext.SaveChangesAsync();
 
             return message;
         }
 
-        public IQueryable<Message> SelectAllMessages()
-        {
-            return this.applicationDbContext.Messages;
-        }
+        public IQueryable<Message> SelectAllMessages() =>
+            this.applicationDbContext.Messages;
 
-        public async ValueTask<Message> SelectMessageByIdAsync(Guid messageId)
-        {
-            return await this.applicationDbContext.Messages.FirstOrDefaultAsync(
-                message => message.Id == messageId);
-        }
+        public async ValueTask<Message> SelectMessageByIdAsync(Guid messageId) =>
+            await this.applicationDbContext.Messages
+            .AsNoTracking()
+            .FirstOrDefaultAsync(message => message.Id == messageId);
 
         public async ValueTask<Message> UpdateMessageAsync(Message message)
         {
@@ -45,7 +40,7 @@ namespace GhostText.Repositories
 
         public async ValueTask<Message> DeleteMessageAsync(Message message)
         {
-            this.applicationDbContext.Entry(message).State = EntityState.Deleted;
+            this.applicationDbContext.Messages.Remove(message);
             await this.applicationDbContext.SaveChangesAsync();
 
             return message;
