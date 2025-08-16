@@ -67,7 +67,7 @@ namespace GhostText.Services
             TelegramUser maybeTelegramUser =
                 await this.RetrieveAllTelegramUser()
                     .FirstOrDefaultAsync(user => 
-                        user.Id == telegramUser.Id);
+                        user.TelegramId == telegramUser.TelegramId);
 
             return maybeTelegramUser ?? await this.AddTelegramUserAsync(telegramUser);
         }
