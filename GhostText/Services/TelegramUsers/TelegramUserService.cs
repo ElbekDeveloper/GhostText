@@ -38,6 +38,12 @@ namespace GhostText.Services
 
         public async ValueTask<TelegramUser> ModifyTelegramUserAsync(TelegramUser telegramUser)
         {
+            TelegramUser storageUser = await this.telegramUserRepository
+                .SelectTelegramUserByIdAsync(telegramUser.Id);
+
+            if (storageUser is null)
+                throw new KeyNotFoundException($"TelegramUser with ID {telegramUser.Id} not found.");
+
             return await this.telegramUserRepository.UpdateTelegramUserAsync(telegramUser);
         }
 

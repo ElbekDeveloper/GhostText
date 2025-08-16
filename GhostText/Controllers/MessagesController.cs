@@ -21,32 +21,19 @@ namespace GhostText.Controllers
             Ok(await this.messageService.AddMessageAsync(message));
 
         [HttpGet]
-        public IQueryable<Message> GetAllMessages() =>
-            this.messageService.RetrieveAllMessages();
+        public ActionResult<IQueryable<Message>> GetAllMessages() =>
+            Ok(this.messageService.RetrieveAllMessages().ToList());
 
         [HttpGet("{messageId}")]
         public async ValueTask<ActionResult<Message>> GetMessageByIdAsync(Guid messageId) =>
-            await this.messageService.RetrieveMessageByIdAsync(messageId) is { } message 
-                ? Ok(message) 
-                : NotFound();
+            Ok(await this.messageService.RetrieveMessageByIdAsync(messageId));
   
-        [HttpPut("{messageId}")]
-        public async ValueTask<ActionResult<Message>> PutMessageAsync(Guid messageId, Message message)
-        {
-            if (messageId != message.Id)
-                return BadRequest("Message ID does not match");
-
-            var updatedMessage = await this.messageService.ModifyMessageAsync(message);
-
-            return updatedMessage is not null
-                ? Ok(updatedMessage)
-                : NotFound($"Message user with ID {messageId} not found.");
-        }
+        [HttpPut]
+        public async ValueTask<ActionResult<Message>> PutMessageAsync(Message message) =>
+            Ok(await this.messageService.ModifyMessageAsync(message));
 
         [HttpDelete("{messageId}")]
         public async ValueTask<ActionResult<Message>> DeleteMessageByIdAsync(Guid messageId) =>
-            await this.messageService.RemoveMessageByIdAsync(messageId) is { } message
-            ? Ok(message) 
-            : NoContent();
+            Ok(await this.messageService.RemoveMessageByIdAsync(messageId));
     }
 }
