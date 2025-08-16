@@ -15,7 +15,6 @@ namespace GhostText.Controllers
 
         public MessagesController(IMessageService messageService) =>
             this.messageService = messageService;
-     }
            
         [HttpPost]
         public async ValueTask<ActionResult<Message>> PostMessageAsync(Message message) =>
