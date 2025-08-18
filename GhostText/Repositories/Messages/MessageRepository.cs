@@ -27,7 +27,6 @@ namespace GhostText.Repositories
 
         public async ValueTask<Message> SelectMessageByIdAsync(Guid messageId) =>
             await this.applicationDbContext.Messages
-            .AsNoTracking()
             .FirstOrDefaultAsync(message => message.Id == messageId);
 
         public async ValueTask<Message> UpdateMessageAsync(Message message)

@@ -27,7 +27,6 @@ namespace GhostText.Repositories
 
         public async ValueTask<TelegramUser> SelectTelegramUserByIdAsync(Guid userId) =>
             await this.applicationDbContext.TelegramUsers
-            .AsNoTracking()
             .FirstOrDefaultAsync(user => user.Id == userId);
         
         public async ValueTask<TelegramUser> UpdateTelegramUserAsync(TelegramUser telegramUser)
