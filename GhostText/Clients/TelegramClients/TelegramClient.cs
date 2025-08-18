@@ -50,8 +50,9 @@ namespace GhostText.TelegramClient
             if (string.IsNullOrWhiteSpace(update.Message.Text)) 
                 return;
 
-            using var scope = _serviceProvider.CreateScope();
-            var telegramUserService = scope.ServiceProvider.GetRequiredService<ITelegramUserService>();
+            using IServiceScope scope = _serviceProvider.CreateScope();
+            ITelegramUserService telegramUserService = scope.ServiceProvider
+                .GetRequiredService<ITelegramUserService>();
 
             TelegramUser telegramUser = new TelegramUser
             {
