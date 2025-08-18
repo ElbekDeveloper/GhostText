@@ -1,11 +1,13 @@
 ﻿using System;
-using GhostText.Models;
 using System.Threading;
 using System.Threading.Tasks;
+using GhostText.Models;
+using GhostText.Services;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
-using Microsoft.Extensions.Configuration;
 
 namespace GhostText.TelegramClient
 {
@@ -14,8 +16,9 @@ namespace GhostText.TelegramClient
         private readonly TelegramSettings telegramSettings;
         private readonly TelegramBotClient botClient;
         private readonly CancellationTokenSource cancellationTokenSource;
+        private readonly IServiceProvider _serviceProvider;
 
-        public TelegramClient(IConfiguration configuration)
+        public TelegramClient(IConfiguration configuration, IServiceProvider serviceProvider)
         {
             this.cancellationTokenSource = new CancellationTokenSource();
             this.telegramSettings = new TelegramSettings();
@@ -23,6 +26,7 @@ namespace GhostText.TelegramClient
 
             this.botClient = new TelegramBotClient(
                 token: this.telegramSettings.BotToken);
+            _serviceProvider = serviceProvider;
         }
 
         public void ListenTelegramBot()
@@ -46,6 +50,17 @@ namespace GhostText.TelegramClient
             if (string.IsNullOrWhiteSpace(update.Message.Text)) 
                 return;
 
+            using var scope = _serviceProvider.CreateScope();
+            var telegramUserService = scope.ServiceProvider.GetRequiredService<ITelegramUserService>();
+
+            TelegramUser telegramUser = new TelegramUser
+            {
+                TelegramId = update.Message.From.Id,
+                UserName = update.Message.From.Username ?? "NoUsername",
+            };
+
+            telegramUser = await telegramUserService.EnsureTelegramUserAsync(telegramUser);
+
             string messageText = update.Message.Text;
 
             if (messageText.StartsWith("/start"))
@@ -58,7 +73,7 @@ namespace GhostText.TelegramClient
             {
                 await telegramBotClient.SendMessage(
                     chatId: this.telegramSettings.ChannelId,
-                    text: $"Botdan kelgan xabar:\n\n {messageText}");
+                    text: $"{messageText}");
             }
         }
 

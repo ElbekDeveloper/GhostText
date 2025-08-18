@@ -16,7 +16,7 @@ namespace GhostText.Repositories
 
         public async ValueTask<TelegramUser> InsertTelegramUserAsync(TelegramUser telegramUser)
         {
-            await this.applicationDbContext.TelegramUsers.AddAsync(telegramUser);
+            this.applicationDbContext.Entry(telegramUser).State = EntityState.Added;
             await this.applicationDbContext.SaveChangesAsync();
 
             return telegramUser;
