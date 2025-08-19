@@ -16,12 +16,12 @@ WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 builder.Services.AddOpenApi();
-builder.Services.AddDbContext<ApplicationDbContext>();
-builder.Services.AddScoped<IMessageRepository, MessageRepository>();
-builder.Services.AddScoped<IMessageService, MessageService>();
-builder.Services.AddScoped<ITelegramUserRepository, TelegramUserRepository>();
-builder.Services.AddScoped<ITelegramUserService, TelegramUserService>();
-builder.Services.AddSingleton<ITelegramClient, TelegramClient>();
+builder.Services.AddTransient<ApplicationDbContext>();
+builder.Services.AddTransient<IMessageRepository, MessageRepository>();
+builder.Services.AddTransient<IMessageService, MessageService>();
+builder.Services.AddTransient<ITelegramUserRepository, TelegramUserRepository>();
+builder.Services.AddTransient<ITelegramUserService, TelegramUserService>();
+builder.Services.AddTransient<ITelegramClient, TelegramClient>();
 builder.Services.AddTransient<ITelegramBotConfigurationRepository, TelegramBotConfigurationRepository>();
 builder.Services.AddTransient<ITelegramBotConfigurationService, TelegramBotConfigurationService>();
 builder.Services.AddTransient<TelegramBotListenersService>();
