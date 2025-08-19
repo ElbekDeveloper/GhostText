@@ -1,4 +1,5 @@
 ﻿using GhostText.Models;
+using GhostText.Models.TelegramBotConfiguration;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 
@@ -13,6 +14,7 @@ namespace GhostText.Data
 
         public DbSet<Message> Messages { get; set; }
         public DbSet<TelegramUser> TelegramUsers { get; set; }
+        public DbSet<TelegramBotConfiguration> TelegramBotConfigurations { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -20,6 +22,14 @@ namespace GhostText.Data
             
             modelBuilder.Entity<TelegramUser>()
                 .HasIndex(user => user.TelegramId)
+                .IsUnique(true);
+
+            modelBuilder.Entity<TelegramBotConfiguration>()
+                .HasIndex(telegramBotConfiguration => telegramBotConfiguration.ChannelId)
+                .IsUnique(true);
+
+            modelBuilder.Entity<TelegramBotConfiguration>()
+                .HasIndex(telegramBotConfiguration => telegramBotConfiguration.Token)
                 .IsUnique(true);
         }
 

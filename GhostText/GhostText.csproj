@@ -20,6 +20,8 @@
 
   <ItemGroup>
     <Folder Include="Clients\" />
+    <Folder Include="Services\TelegramBotConfiguratonService\" />
+    <Folder Include="Services\TelegramUsers\" />
   </ItemGroup>
 
 </Project>

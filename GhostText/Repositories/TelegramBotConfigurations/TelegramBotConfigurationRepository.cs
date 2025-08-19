@@ -1,0 +1,32 @@
+﻿using System.Threading.Tasks;
+using GhostText.Data;
+using GhostText.Models.TelegramBotConfiguration;
+using Microsoft.EntityFrameworkCore;
+
+namespace GhostText.Repositories.TelegramBotConfigurations
+{
+    public class TelegramBotConfigurationRepository : ITelegramBotConfigurationRepository
+    {
+        private readonly ApplicationDbContext applicationDbContext;
+
+        public TelegramBotConfigurationRepository(ApplicationDbContext applicationDbContext)
+        {
+            this.applicationDbContext = applicationDbContext;
+        }
+
+        public async ValueTask<TelegramBotConfiguration>
+            InsertChannelAsync(TelegramBotConfiguration configuration)
+        {
+            this.applicationDbContext.Entry(configuration).State = EntityState.Added;
+            await this.applicationDbContext.SaveChangesAsync();
+
+            return configuration;
+        }
+
+        public async ValueTask<TelegramBotConfiguration> SelectChannelByIdAsync(long channelId)
+        {
+            return await this.applicationDbContext.TelegramBotConfigurations
+                    .FindAsync(channelId);
+        }
+    }
+}
