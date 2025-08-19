@@ -8,12 +8,10 @@ public class TelegramBotListenersService : IInvocable
 {
     private readonly ITelegramBotConfigurationService  telegramBotConfigurationService;
 
-    public TelegramBotListenersService(ITelegramBotConfigurationService telegramBotConfigurationService)
-    {
+    public TelegramBotListenersService(ITelegramBotConfigurationService telegramBotConfigurationService) =>
         this.telegramBotConfigurationService = telegramBotConfigurationService;
-    }
 
-    public Task Invoke()
+    public Task Invoke() 
     {
         this.telegramBotConfigurationService.RetrieveAllTelegramBotConfigurations();
         

@@ -1,5 +1,4 @@
 using Coravel;
-using Coravel.Scheduling.Schedule;
 using GhostText.Data;
 using GhostText.Repositories;
 using GhostText.Repositories.TelegramBotConfigurations;
