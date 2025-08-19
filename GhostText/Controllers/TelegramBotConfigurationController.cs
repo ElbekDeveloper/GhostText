@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 namespace GhostText.Controllers
 {
     [ApiController]
-    [Route("api/telegram-bot-configuration")]
+    [Route("api/telegram-bot-configurations")]
     public class TelegramBotConfigurationController : ControllerBase
     {
         private readonly ITelegramBotConfigurationService telegramBotConfigurationService;
@@ -16,7 +16,11 @@ namespace GhostText.Controllers
 
         [HttpPost]
         public async ValueTask<ActionResult<TelegramBotConfiguration>> PostTelegramBotConfigurationAsync(
-            TelegramBotConfiguration configuration) =>
-            Ok(await this.telegramBotConfigurationService.InsertChannelAsync(configuration));
+            TelegramBotConfiguration configuration)
+        {
+            TelegramBotConfiguration postTelegram = await this.telegramBotConfigurationService.InsertChannelAsync(configuration);
+
+            return postTelegram;
+        }
     }
 }
