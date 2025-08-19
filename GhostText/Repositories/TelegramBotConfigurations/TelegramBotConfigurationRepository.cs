@@ -34,6 +34,5 @@ namespace GhostText.Repositories.TelegramBotConfigurations
         {
             return this.applicationDbContext.TelegramBotConfigurations.AsQueryable();
         }
-
     }
 }

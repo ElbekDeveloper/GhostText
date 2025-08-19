@@ -1,8 +1,11 @@
+using Coravel;
+using Coravel.Scheduling.Schedule;
 using GhostText.Data;
 using GhostText.Repositories;
 using GhostText.Repositories.TelegramBotConfigurations;
 using GhostText.Services;
 using GhostText.Services.TelegramBotConfigurations;
+using GhostText.Services.TelegramBotListeners;
 using GhostText.TelegramClient;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
@@ -21,6 +24,8 @@ builder.Services.AddScoped<ITelegramUserService, TelegramUserService>();
 builder.Services.AddSingleton<ITelegramClient, TelegramClient>();
 builder.Services.AddTransient<ITelegramBotConfigurationRepository, TelegramBotConfigurationRepository>();
 builder.Services.AddTransient<ITelegramBotConfigurationService, TelegramBotConfigurationService>();
+builder.Services.AddTransient<TelegramBotListenersService>();
+builder.Services.AddScheduler();
 
 WebApplication app = builder.Build();
 
@@ -33,6 +38,11 @@ if (app.Environment.IsDevelopment())
     app.MapScalarApiReference();
 }
 
+app.Services.UseScheduler(scheduler =>
+{
+    scheduler.Schedule<TelegramBotListenersService>()
+        .EverySeconds(10).PreventOverlapping(nameof(TelegramBotListenersService));
+});
 app.UseHttpsRedirection();
 app.UseAuthorization();
 app.MapControllers();
