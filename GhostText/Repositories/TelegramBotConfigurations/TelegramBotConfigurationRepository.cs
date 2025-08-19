@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Linq;
+using System.Threading.Tasks;
 using GhostText.Data;
 using GhostText.Models.TelegramBotConfiguration;
 using Microsoft.EntityFrameworkCore;
@@ -28,5 +29,11 @@ namespace GhostText.Repositories.TelegramBotConfigurations
             return await this.applicationDbContext.TelegramBotConfigurations
                     .FindAsync(channelId);
         }
+
+        public   IQueryable<TelegramBotConfiguration> SelectAlltelegramBotConfigurations()
+        {
+            return this.applicationDbContext.TelegramBotConfigurations.AsQueryable();
+        }
+
     }
 }
