@@ -7,6 +7,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Services\TelegramBotConfiguratonService\**" />
+    <Content Remove="Services\TelegramBotConfiguratonService\**" />
+    <EmbeddedResource Remove="Services\TelegramBotConfiguratonService\**" />
+    <None Remove="Services\TelegramBotConfiguratonService\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.6" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.7" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.7">
@@ -20,7 +27,6 @@
 
   <ItemGroup>
     <Folder Include="Clients\" />
-    <Folder Include="Services\TelegramBotConfiguratonService\" />
     <Folder Include="Services\TelegramUsers\" />
   </ItemGroup>
 

@@ -1,6 +1,8 @@
 using GhostText.Data;
 using GhostText.Repositories;
+using GhostText.Repositories.TelegramBotConfigurations;
 using GhostText.Services;
+using GhostText.Services.TelegramBotConfigurations;
 using GhostText.TelegramClient;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
@@ -17,6 +19,8 @@ builder.Services.AddScoped<IMessageService, MessageService>();
 builder.Services.AddScoped<ITelegramUserRepository, TelegramUserRepository>();
 builder.Services.AddScoped<ITelegramUserService, TelegramUserService>();
 builder.Services.AddSingleton<ITelegramClient, TelegramClient>();
+builder.Services.AddTransient<ITelegramBotConfigurationRepository, TelegramBotConfigurationRepository>();
+builder.Services.AddTransient<ITelegramBotConfigurationService, TelegramBotConfigurationService>();
 
 WebApplication app = builder.Build();
 
