@@ -14,7 +14,8 @@ namespace GhostText.Repositories.TelegramBotConfigurations
             this.applicationDbContext = applicationDbContext;
         }
 
-        public async ValueTask<TelegramBotConfiguration> InsertAsync(TelegramBotConfiguration configuration)
+        public async ValueTask<TelegramBotConfiguration>
+            InsertChannelAsync(TelegramBotConfiguration configuration)
         {
             this.applicationDbContext.Entry(configuration).State = EntityState.Added;
             await this.applicationDbContext.SaveChangesAsync();
@@ -22,18 +23,10 @@ namespace GhostText.Repositories.TelegramBotConfigurations
             return configuration;
         }
 
-        public async ValueTask<TelegramBotConfiguration> SelectByChannelIdAsync(long channelId)
+        public async ValueTask<TelegramBotConfiguration> SelectChannelByIdAsync(long channelId)
         {
             return await this.applicationDbContext.TelegramBotConfigurations
-                    .FirstOrDefaultAsync(config => config.ChannelId == channelId);
-        }
-
-        public async ValueTask<TelegramBotConfiguration> SelectByTokenAsync(string token)
-        {
-            var config = await this.applicationDbContext.TelegramBotConfigurations
-        .FirstOrDefaultAsync(c => c.Token == token);
-
-            return config;
+                    .FindAsync(channelId);
         }
     }
 }

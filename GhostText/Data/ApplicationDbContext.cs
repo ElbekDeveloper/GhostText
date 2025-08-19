@@ -23,6 +23,14 @@ namespace GhostText.Data
             modelBuilder.Entity<TelegramUser>()
                 .HasIndex(user => user.TelegramId)
                 .IsUnique(true);
+
+            modelBuilder.Entity<TelegramBotConfiguration>()
+                .HasIndex(telegramBotConfiguration => telegramBotConfiguration.ChannelId)
+                .IsUnique(true);
+
+            modelBuilder.Entity<TelegramBotConfiguration>()
+                .HasIndex(telegramBotConfiguration => telegramBotConfiguration.Token)
+                .IsUnique(true);
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
