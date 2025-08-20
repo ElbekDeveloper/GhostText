@@ -7,7 +7,6 @@ namespace GhostText.Repositories.TelegramBotConfigurations
     public interface ITelegramBotConfigurationRepository
     {
         ValueTask<TelegramBotConfiguration> InsertChannelAsync(TelegramBotConfiguration configuration);
-        ValueTask<TelegramBotConfiguration> SelectChannelByIdAsync(long channelId);
         IQueryable<TelegramBotConfiguration> SelectAlltelegramBotConfigurations();
     }
 }

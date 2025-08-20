@@ -24,11 +24,6 @@ namespace GhostText.Repositories.TelegramBotConfigurations
             return configuration;
         }
 
-        public async ValueTask<TelegramBotConfiguration> SelectChannelByIdAsync(long channelId)
-        {
-            return await this.applicationDbContext.TelegramBotConfigurations
-                    .FindAsync(channelId);
-        }
 
         public   IQueryable<TelegramBotConfiguration> SelectAlltelegramBotConfigurations()
         {

@@ -18,7 +18,7 @@ namespace GhostText.Controllers
         public async ValueTask<ActionResult<TelegramBotConfiguration>> PostTelegramBotConfigurationAsync(
             TelegramBotConfiguration configuration)
         {
-            TelegramBotConfiguration postTelegram = await this.telegramBotConfigurationService.InsertChannelAsync(configuration);
+            TelegramBotConfiguration postTelegram = await this.telegramBotConfigurationService.AddTelegramBotConfigurationAsync(configuration);
 
             return postTelegram;
         }
