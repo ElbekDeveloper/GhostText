@@ -3,13 +3,12 @@ using System.Threading;
 using System.Threading.Tasks;
 using GhostText.Models;
 using GhostText.Services;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 
-namespace GhostText.TelegramClient
+namespace GhostText.Clients.TelegramClients
 {
     public class TelegramClient : ITelegramClient
     {
@@ -18,11 +17,17 @@ namespace GhostText.TelegramClient
         private readonly CancellationTokenSource cancellationTokenSource;
         private readonly IServiceProvider _serviceProvider;
 
-        public TelegramClient(IConfiguration configuration, IServiceProvider serviceProvider)
+        public TelegramClient(
+            string botToken,
+            long channelId,
+            IServiceProvider serviceProvider)
         {
             this.cancellationTokenSource = new CancellationTokenSource();
-            this.telegramSettings = new TelegramSettings();
-            configuration.Bind(nameof(TelegramSettings), this.telegramSettings);
+            this.telegramSettings = new TelegramSettings
+            {
+                ChannelId = channelId,
+                BotToken = botToken
+            };
 
             this.botClient = new TelegramBotClient(
                 token: this.telegramSettings.BotToken);

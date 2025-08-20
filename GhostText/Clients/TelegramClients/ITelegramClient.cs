@@ -1,4 +1,4 @@
-﻿namespace GhostText.TelegramClient
+﻿namespace GhostText.Clients.TelegramClients
 {
     public interface ITelegramClient 
     {
