@@ -1,4 +1,5 @@
 ﻿using GhostText.Models;
+using GhostText.Models.Connects;
 using GhostText.Models.TelegramBotConfiguration;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -15,6 +16,7 @@ namespace GhostText.Data
         public DbSet<Message> Messages { get; set; }
         public DbSet<TelegramUser> TelegramUsers { get; set; }
         public DbSet<TelegramBotConfiguration> TelegramBotConfigurations { get; set; }
+        public DbSet<ConnectToken> ConnectTokens { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
