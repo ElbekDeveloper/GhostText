@@ -39,8 +39,9 @@ if (app.Environment.IsDevelopment())
 app.Services.UseScheduler(scheduler =>
 {
     scheduler.Schedule<TelegramBotListenersService>()
-        .EverySeconds(10).PreventOverlapping(nameof(TelegramBotListenersService));
+        .EverySeconds(1).PreventOverlapping(nameof(TelegramBotListenersService));
 });
+
 app.UseHttpsRedirection();
 app.UseAuthorization();
 app.MapControllers();

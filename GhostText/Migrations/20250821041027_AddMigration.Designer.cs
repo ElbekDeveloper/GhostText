@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace GhostText.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250819061157_AddTelegramBotConfigurationMigration")]
-    partial class AddTelegramBotConfigurationMigration
+    [Migration("20250821041027_AddMigration")]
+    partial class AddMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
