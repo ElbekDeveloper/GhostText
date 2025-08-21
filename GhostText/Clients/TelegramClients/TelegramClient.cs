@@ -3,7 +3,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using GhostText.Models;
 using GhostText.Services;
-using Microsoft.Extensions.DependencyInjection;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
@@ -15,12 +14,12 @@ namespace GhostText.Clients.TelegramClients
         private readonly TelegramSettings telegramSettings;
         private readonly TelegramBotClient botClient;
         private readonly CancellationTokenSource cancellationTokenSource;
-        private readonly IServiceProvider _serviceProvider;
+        private readonly ITelegramUserService telegramUserService;
 
         public TelegramClient(
             string botToken,
             long channelId,
-            IServiceProvider serviceProvider)
+            ITelegramUserService telegramUserService)
         {
             this.cancellationTokenSource = new CancellationTokenSource();
             this.telegramSettings = new TelegramSettings
@@ -31,7 +30,7 @@ namespace GhostText.Clients.TelegramClients
 
             this.botClient = new TelegramBotClient(
                 token: this.telegramSettings.BotToken);
-            _serviceProvider = serviceProvider;
+            this.telegramUserService = telegramUserService;
         }
 
         public void ListenTelegramBot()
@@ -54,10 +53,6 @@ namespace GhostText.Clients.TelegramClients
             
             if (string.IsNullOrWhiteSpace(update.Message.Text)) 
                 return;
-
-            using IServiceScope scope = _serviceProvider.CreateScope();
-            ITelegramUserService telegramUserService = scope.ServiceProvider
-                .GetRequiredService<ITelegramUserService>();
 
             TelegramUser telegramUser = new TelegramUser
             {
