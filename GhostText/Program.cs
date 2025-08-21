@@ -5,7 +5,7 @@ using GhostText.Repositories.TelegramBotConfigurations;
 using GhostText.Services;
 using GhostText.Services.TelegramBotConfigurations;
 using GhostText.Services.TelegramBotListeners;
-using GhostText.TelegramClient;
+using GhostText.Clients.TelegramClients;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -20,7 +20,6 @@ builder.Services.AddTransient<IMessageRepository, MessageRepository>();
 builder.Services.AddTransient<IMessageService, MessageService>();
 builder.Services.AddTransient<ITelegramUserRepository, TelegramUserRepository>();
 builder.Services.AddTransient<ITelegramUserService, TelegramUserService>();
-builder.Services.AddTransient<ITelegramClient, TelegramClient>();
 builder.Services.AddTransient<ITelegramBotConfigurationRepository, TelegramBotConfigurationRepository>();
 builder.Services.AddTransient<ITelegramBotConfigurationService, TelegramBotConfigurationService>();
 builder.Services.AddTransient<TelegramBotListenersService>();
@@ -28,8 +27,8 @@ builder.Services.AddScheduler();
 
 WebApplication app = builder.Build();
 
-app.Services.GetRequiredService<ITelegramClient>()
-    .ListenTelegramBot();
+//app.Services.GetRequiredService<ITelegramClient>()
+//    .ListenTelegramBot();
 
 if (app.Environment.IsDevelopment())
 {
