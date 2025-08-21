@@ -1,29 +1,28 @@
-using Coravel.Invocable;
+using System;
+using System.Linq;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using GhostText.Clients.TelegramClients;
 using GhostText.Models.TelegramBotConfiguration;
 using GhostText.Services.TelegramBotConfigurations;
-using Microsoft.Extensions.Hosting;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using Coravel.Invocable;
 
 namespace GhostText.Services.TelegramBotListeners;
 
 public class TelegramBotListenersService : IInvocable
 {
     private readonly ITelegramBotConfigurationService  telegramBotConfigurationService;
-    private readonly IServiceProvider serviceProvider;
+    private readonly ITelegramUserService telegramUserService;
 
     private static Dictionary<Guid, ITelegramClient> telegramClientsDictionary = 
         new Dictionary<Guid, ITelegramClient>();
 
     public TelegramBotListenersService(
-        ITelegramBotConfigurationService telegramBotConfigurationService,
-        IServiceProvider serviceProvider)
+        ITelegramBotConfigurationService telegramBotConfigurationService, 
+        ITelegramUserService telegramUserService)
     {
         this.telegramBotConfigurationService = telegramBotConfigurationService;
-        this.serviceProvider = serviceProvider;
+        this.telegramUserService = telegramUserService;
     }
 
     public Task Invoke() 
@@ -39,7 +38,7 @@ public class TelegramBotListenersService : IInvocable
            var telegramClient = new TelegramClient(
                 botToken: bot.Token,
                 channelId: bot.ChannelId,
-                serviceProvider: this.serviceProvider);
+                telegramUserService: telegramUserService);
 
             telegramClient.ListenTelegramBot();
             telegramClientsDictionary.Add(bot.Id, telegramClient);
