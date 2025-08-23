@@ -9,6 +9,5 @@ namespace GhostText.Models.TelegramBotConfigurations
         public string Token { get; set; }
         public DateTimeOffset CreatedDate { get; set; }
         public DateTimeOffset UpdatedDate { get; set;}
-
     }
 }
