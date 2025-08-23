@@ -1,8 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System;
-using System.ComponentModel.DataAnnotations;
+﻿using System;
 
-namespace GhostText.Models.TelegramBotConfiguration
+namespace GhostText.Models.TelegramBotConfigurations
 {
     public class TelegramBotConfiguration
     {
@@ -10,7 +8,6 @@ namespace GhostText.Models.TelegramBotConfiguration
         public long ChannelId { get; set; }
         public string Token { get; set; }
         public DateTimeOffset CreatedDate { get; set; }
-        public DateTimeOffset UpdatedDate { get; set;}
-
+        public DateTimeOffset UpdatedDate { get; set; }
     }
 }
