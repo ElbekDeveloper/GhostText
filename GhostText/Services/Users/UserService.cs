@@ -16,8 +16,8 @@ namespace GhostText.Services.Users
         public async ValueTask<User> AddUserAsync(User user) 
         {
             DateTimeOffset now = DateTimeOffset.UtcNow;
-            user.CreatedAt = now;
-            user.UpdatedAt = now;
+            user.CreatedDate = now;
+            user.UpdatedDate = now;
 
             return await this.userRepository.InsertUserAsync(user);
         }

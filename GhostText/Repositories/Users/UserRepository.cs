@@ -9,6 +9,7 @@ namespace GhostText.Repositories.Users
     public class UserRepository : IUserRepository
     {
         private readonly ApplicationDbContext dbContext;
+
         public UserRepository(ApplicationDbContext dbContext) =>
             this.dbContext = dbContext;
 

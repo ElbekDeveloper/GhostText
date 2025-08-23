@@ -10,6 +10,7 @@ namespace GhostText.Controllers
     public class AccountsController : ControllerBase
     {
         private readonly IAccountService accountService;
+
         public AccountsController(IAccountService accountService) =>
             this.accountService = accountService;
 

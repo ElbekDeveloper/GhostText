@@ -18,26 +18,7 @@ using System.Text;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddAuthentication(options =>
-{
-    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-})
-.AddJwtBearer(options =>
-{
-    options.TokenValidationParameters = new TokenValidationParameters
-    {
-        ValidateIssuer = true,
-        ValidIssuer = builder.Configuration["AuthConfiguration:Issuer"],
-        ValidateAudience = true,
-        ValidAudience = builder.Configuration["AuthConfiguration:Audience"],
-        ValidateLifetime = true,
-        ValidateIssuerSigningKey = true,
-
-        IssuerSigningKey = new SymmetricSecurityKey(
-            Encoding.UTF8.GetBytes(builder.Configuration["AuthConfiguration:Key"]!))
-    };
-});
+AddJwtAuthentication(builder);
 
 builder.Services.AddAuthorization();
 builder.Services.AddControllers();
@@ -74,3 +55,27 @@ app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
 app.Run();
+
+static void AddJwtAuthentication(WebApplicationBuilder builder)
+{
+    builder.Services.AddAuthentication(options =>
+    {
+        options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+        options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    })
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidIssuer = builder.Configuration["AuthConfiguration:Issuer"],
+            ValidateAudience = true,
+            ValidAudience = builder.Configuration["AuthConfiguration:Audience"],
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+
+            IssuerSigningKey = new SymmetricSecurityKey(
+                Encoding.UTF8.GetBytes(builder.Configuration["AuthConfiguration:Key"]!))
+        };
+    });
+}

@@ -11,14 +11,7 @@ namespace GhostText.Models.Users
         public string LastName { get; set; }
         public string PhoneNumber { get; set; }
         public UserRole Role { get; set; }
-        public DateTimeOffset CreatedAt { get; set; }
-        public DateTimeOffset UpdatedAt { get; set; }
-    }
-
-    public enum UserRole
-    {
-        Admin,
-        User,
-        Guest
+        public DateTimeOffset CreatedDate { get; set; }
+        public DateTimeOffset UpdatedDate { get; set; }
     }
 }
