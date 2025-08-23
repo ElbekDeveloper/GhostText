@@ -1,5 +1,6 @@
 using Coravel;
 using GhostText.Data;
+using GhostText.Middlewares;
 using GhostText.Repositories;
 using GhostText.Repositories.TelegramBotConfigurations;
 using GhostText.Repositories.Users;
@@ -20,6 +21,8 @@ WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
 AddJwtAuthentication(builder);
 
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+builder.Services.AddProblemDetails();
 builder.Services.AddAuthorization();
 builder.Services.AddControllers();
 builder.Services.AddOpenApi();
