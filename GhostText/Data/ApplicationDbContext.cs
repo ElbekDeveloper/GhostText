@@ -1,5 +1,5 @@
 ﻿using GhostText.Models;
-using GhostText.Models.TelegramBotConfiguration;
+using GhostText.Models.TelegramBotConfigurations;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 

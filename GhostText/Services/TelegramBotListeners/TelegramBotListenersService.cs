@@ -3,9 +3,9 @@ using System.Linq;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using GhostText.Clients.TelegramClients;
-using GhostText.Models.TelegramBotConfiguration;
 using GhostText.Services.TelegramBotConfigurations;
 using Coravel.Invocable;
+using GhostText.Models.TelegramBotConfigurations;
 
 namespace GhostText.Services.TelegramBotListeners;
 
@@ -35,7 +35,7 @@ public class TelegramBotListenersService : IInvocable
 
         foreach (TelegramBotConfiguration bot in telegramBotList)
         {
-           var telegramClient = new TelegramClient(
+            var telegramClient = new TelegramClient(
                 botToken: bot.Token,
                 channelId: bot.ChannelId,
                 telegramUserService: telegramUserService);
