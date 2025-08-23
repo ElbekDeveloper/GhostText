@@ -1,6 +1,6 @@
-﻿using GhostText.Models.TelegramBotConfiguration;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
+using GhostText.Models.TelegramBotConfigurations;
 
 namespace GhostText.Repositories.TelegramBotConfigurations
 {

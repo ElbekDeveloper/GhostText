@@ -1,8 +1,8 @@
-﻿using GhostText.Models.TelegramBotConfiguration;
-using GhostText.Services.TelegramBotConfigurations;
+﻿using GhostText.Services.TelegramBotConfigurations;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
+using GhostText.Models.TelegramBotConfigurations;
 
 namespace GhostText.Controllers
 {
