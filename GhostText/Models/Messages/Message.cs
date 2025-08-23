@@ -1,5 +1,4 @@
 using System;
-using GhostText.Models.TelegramBotConfigurations;
 
 namespace GhostText.Models;
 
@@ -10,5 +9,5 @@ public class Message
     public DateTime CreateDate { get; set; }
 
     public Guid TelegramBotConfigurationId { get; set; }
-    public TelegramBotConfiguration TelegramBotConfiguration { get; set; }
+    public GhostText.Models.TelegramBotConfiguration.TelegramBotConfiguration TelegramBotConfiguration { get; set; }
 }

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace GhostText.Models.TelegramBotConfigurations
+namespace GhostText.Models.TelegramBotConfiguration
 {
     public class TelegramBotConfiguration
     {
