@@ -11,6 +11,6 @@ namespace GhostText.Services
         IQueryable<Message> RetrieveAllMessages();
         ValueTask<Message> RetrieveMessageByIdAsync(Guid messageId);
         ValueTask<Message> ModifyMessageAsync(Message message);
-        ValueTask<Message> RemoveMessageByIdAsync(Guid id);
+        ValueTask<Message> RemoveMessageByIdAsync(Guid Id);
     }
 }

@@ -12,5 +12,6 @@ namespace GhostText.Repositories
         ValueTask<Message> SelectMessageByIdAsync(Guid messageId);
         ValueTask<Message> UpdateMessageAsync(Message message);
         ValueTask<Message> DeleteMessageAsync(Message message);
+        ValueTask<int> RemoveRangeAsync();
     }
 }

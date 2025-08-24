@@ -6,5 +6,5 @@ public class Message
 {
     public Guid Id { get; set; }
     public string Text { get; set; }
-    public DateTime CreateDate { get; set; }
+    public DateTime CreateDate { get; set; } = DateTime.Now;
 }

@@ -12,10 +12,9 @@ namespace GhostText.Data
         public ApplicationDbContext(IConfiguration configuration) =>
             this.configuration = configuration;
 
-        public DbSet<Message> Messages { get; set; }
+        public DbSet<Message> Messages => Set<Message>();
         public DbSet<TelegramUser> TelegramUsers { get; set; }
         public DbSet<TelegramBotConfiguration> TelegramBotConfigurations { get; set; }
-
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);

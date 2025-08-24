@@ -3,6 +3,7 @@ using GhostText.Data;
 using GhostText.Repositories;
 using GhostText.Repositories.TelegramBotConfigurations;
 using GhostText.Services;
+using GhostText.Services.TelegramBotBackgroundService;
 using GhostText.Services.TelegramBotConfigurations;
 using GhostText.Services.TelegramBotListeners;
 using Microsoft.AspNetCore.Builder;
@@ -23,6 +24,7 @@ builder.Services.AddTransient<ITelegramBotConfigurationRepository, TelegramBotCo
 builder.Services.AddTransient<ITelegramBotConfigurationService, TelegramBotConfigurationService>();
 builder.Services.AddSingleton<TelegramBotListenersService>();
 builder.Services.AddScheduler();
+builder.Services.AddTransient<TelegramBotBackgroundService, TelegramBotBackgroundService>();
 
 WebApplication app = builder.Build();
 
