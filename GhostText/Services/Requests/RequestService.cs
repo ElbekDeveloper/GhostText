@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using GhostText.Models;
 using GhostText.Services.Levenshteins;
 
 namespace GhostText.Services.Requests;
@@ -16,7 +15,7 @@ public class RequestService: IRequestService
         this.levenshteinService = levenshteinService;
         
         this.dictionary = File.ReadAllLines(
-                Path.Combine("/Users/macbook/RiderProjects/GhostText/GhostText/bin/Debug/net9.0", "yomonSoz.txt"))
+                Path.Combine("E://TestFiles", "yomonSoz.txt"))
             .Select(x => x.Trim().ToLowerInvariant())
             .Where(x => !string.IsNullOrWhiteSpace(x))
             .ToList();

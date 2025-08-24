@@ -21,7 +21,8 @@ namespace GhostText.Clients.TelegramClients
         public TelegramClient(
             string botToken,
             long channelId,
-            ITelegramUserService telegramUserService)
+            ITelegramUserService telegramUserService,
+            IRequestService requestService)
         {
             this.cancellationTokenSource = new CancellationTokenSource();
             this.telegramSettings = new TelegramSettings
@@ -29,12 +30,13 @@ namespace GhostText.Clients.TelegramClients
                 ChannelId = channelId,
                 BotToken = botToken
             };
-            
-        this.botClient = new TelegramBotClient(
-                token: this.telegramSettings.BotToken);
+
+            this.botClient = new TelegramBotClient(
+                    token: this.telegramSettings.BotToken);
             this.telegramUserService = telegramUserService;
+            this.requestService = requestService;
         }
-        
+
         public TelegramClient(IRequestService requestService)
         {
             this.requestService = requestService;
@@ -88,7 +90,7 @@ namespace GhostText.Clients.TelegramClients
                 else
                 {
                     await telegramBotClient.SendMessage(
-                        chatId: this.telegramSettings.BotToken,
+                        chatId: this.telegramSettings.ChannelId,
                         text: "Your text has a forbidden word.");
                 }
             }
