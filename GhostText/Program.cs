@@ -53,6 +53,8 @@ app.Services.UseScheduler(scheduler =>
         .EverySeconds(1).PreventOverlapping(nameof(TelegramBotListenersService));
 });
 
+app.UseMiddleware<GlobalErrorHandlingMiddleware>();
+app.UseExceptionHandler();
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
