@@ -90,7 +90,7 @@ namespace GhostText.Clients.TelegramClients
                 else
                 {
                     await telegramBotClient.SendMessage(
-                        chatId: this.telegramSettings.ChannelId,
+                        chatId: update.Message.Chat.Id,
                         text: "Your text has a forbidden word.");
                 }
             }
