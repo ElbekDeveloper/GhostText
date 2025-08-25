@@ -4,10 +4,11 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using GhostText.Models;
 using GhostText.Services;
+using Microsoft.AspNetCore.Authorization;
 
 namespace GhostText.Controllers
 {
-    [ApiController]
+    [ApiController, Authorize]
     [Route("api/[controller]")]
     public class TelegramUserController : ControllerBase
     {

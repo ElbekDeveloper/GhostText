@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using GhostText.Models;
 using GhostText.Repositories;
+using GhostText.Services.Levenshteins;
 
 namespace GhostText.Services
 {
@@ -11,14 +12,16 @@ namespace GhostText.Services
     {
         private readonly IMessageRepository messageRepository;
 
-        public MessageService(IMessageRepository messageRepository) =>
+        public MessageService(IMessageRepository messageRepository)
+        {
             this.messageRepository = messageRepository;
+        }
 
         public async ValueTask<Message> AddMessageAsync(Message message)
         {
             if (string.IsNullOrWhiteSpace(message.Text))
                 throw new ArgumentException("Message text cannot be empty.");
-
+            
             message.CreateDate = DateTime.UtcNow;
 
             return await this.messageRepository.InsertMessageAsync(message);

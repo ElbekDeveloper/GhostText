@@ -3,9 +3,10 @@ using System.Linq;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using GhostText.Clients.TelegramClients;
-using GhostText.Models.TelegramBotConfiguration;
 using GhostText.Services.TelegramBotConfigurations;
 using Coravel.Invocable;
+using GhostText.Models.TelegramBotConfigurations;
+using GhostText.Services.Requests;
 
 namespace GhostText.Services.TelegramBotListeners;
 
@@ -13,6 +14,7 @@ public class TelegramBotListenersService : IInvocable
 {
     private readonly ITelegramBotConfigurationService  telegramBotConfigurationService;
     private readonly ITelegramUserService telegramUserService;
+    private readonly IRequestService requestService;
     private readonly IMessageService messageService;
 
     private static Dictionary<Guid, ITelegramClient> telegramClientsDictionary = 
@@ -21,10 +23,14 @@ public class TelegramBotListenersService : IInvocable
     public TelegramBotListenersService(
         ITelegramBotConfigurationService telegramBotConfigurationService,
         ITelegramUserService telegramUserService,
+        IRequestService requestService)
+        ITelegramBotConfigurationService telegramBotConfigurationService,
+        ITelegramUserService telegramUserService,
         IMessageService messageService)
     {
         this.telegramBotConfigurationService = telegramBotConfigurationService;
         this.telegramUserService = telegramUserService;
+        this.requestService = requestService;
         this.messageService = messageService;
     }
 
@@ -38,11 +44,13 @@ public class TelegramBotListenersService : IInvocable
 
         foreach (TelegramBotConfiguration bot in telegramBotList)
         {
-           var telegramClient = new TelegramClient(
+            TelegramClient telegramClient = new TelegramClient(
                 botToken: bot.Token,
                 channelId: bot.ChannelId,
                 messageService: messageService,
                 telegramUserService: telegramUserService);
+                telegramUserService: telegramUserService,
+                requestService: requestService);
 
             telegramClient.ListenTelegramBot();
             telegramClientsDictionary.Add(bot.Id, telegramClient);

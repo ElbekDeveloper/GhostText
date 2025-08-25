@@ -1,8 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System;
-using System.ComponentModel.DataAnnotations;
+﻿using System;
 
-namespace GhostText.Models.TelegramBotConfiguration
+namespace GhostText.Models.TelegramBotConfigurations
 {
     public class TelegramBotConfiguration
     {

@@ -1,5 +1,6 @@
 ﻿using GhostText.Models;
-using GhostText.Models.TelegramBotConfiguration;
+using GhostText.Models.TelegramBotConfigurations;
+using GhostText.Models.Users;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 
@@ -15,6 +16,8 @@ namespace GhostText.Data
         public DbSet<Message> Messages => Set<Message>();
         public DbSet<TelegramUser> TelegramUsers { get; set; }
         public DbSet<TelegramBotConfiguration> TelegramBotConfigurations { get; set; }
+        public DbSet<User> Users { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
