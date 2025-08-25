@@ -30,7 +30,7 @@ namespace GhostText.Services.BackgroundServices
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
             long channelId = this.dbContext
-                .Set<Models.TelegramBotConfiguration.TelegramBotConfiguration>()
+                .TelegramBotConfigurations
                 .Select(bot => bot.ChannelId)
                 .FirstOrDefault();
 
@@ -49,7 +49,6 @@ namespace GhostText.Services.BackgroundServices
                         await Task.Delay(TimeSpan.FromMinutes(5), stoppingToken);
                         continue;
                     }
-
 
                     if (allMessages.Any())
                     {

@@ -12,33 +12,31 @@ namespace GhostText.Services.TelegramBotListeners;
 
 public class TelegramBotListenersService : IInvocable
 {
-    private readonly ITelegramBotConfigurationService  telegramBotConfigurationService;
+    private readonly ITelegramBotConfigurationService telegramBotConfigurationService;
     private readonly ITelegramUserService telegramUserService;
     private readonly IRequestService requestService;
     private readonly IMessageService messageService;
-
-    private static Dictionary<Guid, ITelegramClient> telegramClientsDictionary = 
-        new Dictionary<Guid, ITelegramClient>();
+    private Dictionary<Guid, ITelegramClient> telegramClientsDictionary;
 
     public TelegramBotListenersService(
-        ITelegramBotConfigurationService telegramBotConfigurationService,
         ITelegramUserService telegramUserService,
-        IRequestService requestService)
+        IRequestService requestService,
         ITelegramBotConfigurationService telegramBotConfigurationService,
-        ITelegramUserService telegramUserService,
         IMessageService messageService)
     {
         this.telegramBotConfigurationService = telegramBotConfigurationService;
         this.telegramUserService = telegramUserService;
         this.requestService = requestService;
         this.messageService = messageService;
+        this.telegramClientsDictionary = new Dictionary<Guid, ITelegramClient>();
     }
 
-    public Task Invoke() 
+    public Task Invoke()
     {
-        List<Guid> isActiveTelegramBotList = telegramClientsDictionary.Keys.ToList();
+        List<Guid> isActiveTelegramBotList =
+            this.telegramClientsDictionary.Keys.ToList();
 
-        IQueryable<TelegramBotConfiguration> telegramBotList = 
+        IQueryable<TelegramBotConfiguration> telegramBotList =
             this.telegramBotConfigurationService.RetrieveAllTelegramBotConfigurations()
                 .Where(bot => isActiveTelegramBotList.Contains(bot.Id) == false);
 
@@ -48,12 +46,11 @@ public class TelegramBotListenersService : IInvocable
                 botToken: bot.Token,
                 channelId: bot.ChannelId,
                 messageService: messageService,
-                telegramUserService: telegramUserService);
                 telegramUserService: telegramUserService,
                 requestService: requestService);
 
             telegramClient.ListenTelegramBot();
-            telegramClientsDictionary.Add(bot.Id, telegramClient);
+            this.telegramClientsDictionary.Add(bot.Id, telegramClient);
         }
 
         return Task.CompletedTask;

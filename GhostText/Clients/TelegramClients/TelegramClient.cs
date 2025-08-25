@@ -23,8 +23,7 @@ namespace GhostText.Clients.TelegramClients
             string botToken,
             long channelId,
             ITelegramUserService telegramUserService,
-            IRequestService requestService)
-            ITelegramUserService telegramUserService,
+            IRequestService requestService,
             IMessageService messageService)
         {
             this.cancellationTokenSource = new CancellationTokenSource();
