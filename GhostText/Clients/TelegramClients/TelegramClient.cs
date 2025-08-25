@@ -68,13 +68,22 @@ namespace GhostText.Clients.TelegramClients
             {
                 await telegramBotClient.SendMessage(
                     chatId: this.telegramSettings.ChannelId,
-                    text: "Xush kelibsiz");
+                    text: "Xush kelibsiz");  
             }
             else
             {
-                await telegramBotClient.SendMessage(
-                    chatId: this.telegramSettings.ChannelId,
-                    text: $"{messageText}");
+                if (requestService.ContainsForbiddenWord(messageText) is false)
+                {
+                    await telegramBotClient.SendMessage(
+                        chatId: this.telegramSettings.ChannelId,
+                        text: $"{messageText}");
+                }
+                else
+                {
+                    await telegramBotClient.SendMessage(
+                        chatId: update.Message.Chat.Id,
+                        text: "Haqoratli so'z ishlatmang ❌");
+                }
             }
         }
 

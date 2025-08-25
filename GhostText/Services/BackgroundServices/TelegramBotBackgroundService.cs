@@ -21,10 +21,6 @@ namespace GhostText.Services.TelegramBotBackgroundService
         }
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            //    var massege = this.messageService.RetrieveAllMessages()
-            //        .First(massege => massege.CreateDate <= DateTime.UtcNow.AddDays(-3).Date);
-
-            //    await this.messageService.RemoveMessageByIdAsync(massege.Id);
             while (!stoppingToken.IsCancellationRequested)
             {
                 try
