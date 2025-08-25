@@ -3,6 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using GhostText.Models;
 using GhostText.Services;
+using GhostText.Services.Requests;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
@@ -15,11 +16,13 @@ namespace GhostText.Clients.TelegramClients
         private readonly TelegramBotClient botClient;
         private readonly CancellationTokenSource cancellationTokenSource;
         private readonly ITelegramUserService telegramUserService;
+        private readonly IRequestService requestService;
 
         public TelegramClient(
             string botToken,
             long channelId,
-            ITelegramUserService telegramUserService)
+            ITelegramUserService telegramUserService,
+            IRequestService requestService)
         {
             this.cancellationTokenSource = new CancellationTokenSource();
             this.telegramSettings = new TelegramSettings
@@ -29,10 +32,11 @@ namespace GhostText.Clients.TelegramClients
             };
 
             this.botClient = new TelegramBotClient(
-                token: this.telegramSettings.BotToken);
+                    token: this.telegramSettings.BotToken);
             this.telegramUserService = telegramUserService;
+            this.requestService = requestService;
         }
-
+        
         public void ListenTelegramBot()
         {
             this.botClient.StartReceiving(
@@ -63,7 +67,6 @@ namespace GhostText.Clients.TelegramClients
             telegramUser = await telegramUserService.EnsureTelegramUserAsync(telegramUser);
 
             string messageText = update.Message.Text;
-
             if (messageText.StartsWith("/start"))
             {
                 await telegramBotClient.SendMessage(
@@ -72,9 +75,18 @@ namespace GhostText.Clients.TelegramClients
             }
             else
             {
-                await telegramBotClient.SendMessage(
-                    chatId: this.telegramSettings.ChannelId,
-                    text: $"{messageText}");
+                if (requestService.ContainsForbiddenWord(messageText) is false)
+                {
+                    await telegramBotClient.SendMessage(
+                        chatId: this.telegramSettings.ChannelId,
+                        text: $"{messageText}");
+                }
+                else
+                {
+                    await telegramBotClient.SendMessage(
+                        chatId: update.Message.Chat.Id,
+                        text: "Your text has a forbidden word.");
+                }
             }
         }
 
