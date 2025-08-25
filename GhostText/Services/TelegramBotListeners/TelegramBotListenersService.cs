@@ -13,16 +13,19 @@ public class TelegramBotListenersService : IInvocable
 {
     private readonly ITelegramBotConfigurationService  telegramBotConfigurationService;
     private readonly ITelegramUserService telegramUserService;
+    private readonly IMessageService messageService;
 
     private static Dictionary<Guid, ITelegramClient> telegramClientsDictionary = 
         new Dictionary<Guid, ITelegramClient>();
 
     public TelegramBotListenersService(
-        ITelegramBotConfigurationService telegramBotConfigurationService, 
-        ITelegramUserService telegramUserService)
+        ITelegramBotConfigurationService telegramBotConfigurationService,
+        ITelegramUserService telegramUserService,
+        IMessageService messageService)
     {
         this.telegramBotConfigurationService = telegramBotConfigurationService;
         this.telegramUserService = telegramUserService;
+        this.messageService = messageService;
     }
 
     public Task Invoke() 
@@ -38,6 +41,7 @@ public class TelegramBotListenersService : IInvocable
            var telegramClient = new TelegramClient(
                 botToken: bot.Token,
                 channelId: bot.ChannelId,
+                messageService: messageService,
                 telegramUserService: telegramUserService);
 
             telegramClient.ListenTelegramBot();

@@ -1,14 +1,8 @@
-﻿using GhostText.Data;
-using GhostText.Models;
-using GhostText.Repositories;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using Microsoft.OpenApi.Writers;
-using System;
-using System.Linq;
-using System.Security.Cryptography.X509Certificates;
+﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+using GhostText.Repositories;
+using Microsoft.Extensions.Hosting;
 
 namespace GhostText.Services.TelegramBotBackgroundService
 {

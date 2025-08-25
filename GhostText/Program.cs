@@ -3,6 +3,7 @@ using GhostText.Data;
 using GhostText.Repositories;
 using GhostText.Repositories.TelegramBotConfigurations;
 using GhostText.Services;
+using GhostText.Services.BackgroundServices;
 using GhostText.Services.TelegramBotBackgroundService;
 using GhostText.Services.TelegramBotConfigurations;
 using GhostText.Services.TelegramBotListeners;
@@ -10,6 +11,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Scalar.AspNetCore;
+using Telegram.Bot;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
@@ -25,6 +27,13 @@ builder.Services.AddTransient<ITelegramBotConfigurationService, TelegramBotConfi
 builder.Services.AddSingleton<TelegramBotListenersService>();
 builder.Services.AddScheduler();
 builder.Services.AddTransient<TelegramBotBackgroundService, TelegramBotBackgroundService>();
+
+builder.Services.AddSingleton<ITelegramBotClient>(sp =>
+    new TelegramBotClient(builder.Configuration["TelegramSettings:BotToken"])
+);
+builder.Services.AddSingleton<RandomMessageSenderService>();
+builder.Services.AddHostedService<RandomMessageSenderService>(provider =>
+    provider.GetRequiredService<RandomMessageSenderService>());
 
 WebApplication app = builder.Build();
 
