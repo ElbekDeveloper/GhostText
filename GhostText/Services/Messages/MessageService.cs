@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using GhostText.Models;
 using GhostText.Repositories;
-using GhostText.Services.Levenshteins;
 
 namespace GhostText.Services
 {
