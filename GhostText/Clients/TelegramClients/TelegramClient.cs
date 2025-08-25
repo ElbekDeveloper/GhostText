@@ -12,6 +12,7 @@ namespace GhostText.Clients.TelegramClients
 {
     public class TelegramClient : ITelegramClient
     {
+        private readonly Guid telegramBotConfigurationId;
         private readonly TelegramSettings telegramSettings;
         private readonly TelegramBotClient botClient;
         private readonly CancellationTokenSource cancellationTokenSource;
@@ -24,7 +25,8 @@ namespace GhostText.Clients.TelegramClients
             long channelId,
             ITelegramUserService telegramUserService,
             IRequestService requestService,
-            IMessageService messageService)
+            IMessageService messageService,
+            Guid telegramBotConfigurationId)
         {
             this.cancellationTokenSource = new CancellationTokenSource();
             this.telegramSettings = new TelegramSettings
@@ -38,8 +40,9 @@ namespace GhostText.Clients.TelegramClients
             this.telegramUserService = telegramUserService;
             this.messageService = messageService;
             this.requestService = requestService;
+            this.telegramBotConfigurationId = telegramBotConfigurationId;
         }
-        
+
         public void ListenTelegramBot()
         {
             this.botClient.StartReceiving(
@@ -71,11 +74,12 @@ namespace GhostText.Clients.TelegramClients
 
             string messageText = update.Message.Text;
 
-            GhostText.Models.Message telegramMessage = new GhostText.Models.Message
+            Models.Message telegramMessage = new Models.Message
             {
                 Id = Guid.NewGuid(),
                 Text = messageText,
                 CreateDate = DateTime.UtcNow,
+                TelegramBotConfigurationId = this.telegramBotConfigurationId
             };
 
             await messageService.AddMessageAsync(telegramMessage);

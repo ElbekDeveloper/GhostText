@@ -47,7 +47,8 @@ public class TelegramBotListenersService : IInvocable
                 channelId: bot.ChannelId,
                 messageService: messageService,
                 telegramUserService: telegramUserService,
-                requestService: requestService);
+                requestService: requestService,
+                telegramBotConfigurationId: bot.Id);
 
             telegramClient.ListenTelegramBot();
             this.telegramClientsDictionary.Add(bot.Id, telegramClient);
