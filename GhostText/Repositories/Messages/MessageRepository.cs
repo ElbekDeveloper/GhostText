@@ -10,7 +10,7 @@ namespace GhostText.Repositories
     public class MessageRepository : IMessageRepository
     {
         private readonly ApplicationDbContext applicationDbContext;
-
+        
         public MessageRepository(ApplicationDbContext applicationDbContext) =>
             this.applicationDbContext = applicationDbContext;
 
@@ -43,6 +43,13 @@ namespace GhostText.Repositories
             await this.applicationDbContext.SaveChangesAsync();
 
             return message;
+        }
+        public async ValueTask<int> RemoveRangeAsync()
+        {
+            var oldMessage = this.applicationDbContext.Messages
+               .Where(message => message.CreateDate < DateTime.UtcNow.AddDays(-3));
+            this.applicationDbContext.Messages.RemoveRange(oldMessage);
+            return await this.applicationDbContext.SaveChangesAsync();
         }
     }
 }

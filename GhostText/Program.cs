@@ -5,6 +5,7 @@ using GhostText.Repositories;
 using GhostText.Repositories.TelegramBotConfigurations;
 using GhostText.Repositories.Users;
 using GhostText.Services;
+using GhostText.Services.TelegramBotBackgroundService;
 using GhostText.Services.Levenshteins;
 using GhostText.Services.Requests;
 using GhostText.Services.Accounts;
@@ -43,6 +44,7 @@ builder.Services.AddTransient<ILevenshteinService, LevenshteinService>();
 builder.Services.AddTransient<IRequestService, RequestService>();
 builder.Services.AddSingleton<TelegramBotListenersService>();
 builder.Services.AddScheduler();
+builder.Services.AddTransient<TelegramBotBackgroundService, TelegramBotBackgroundService>();
 
 WebApplication app = builder.Build();
 

@@ -71,7 +71,7 @@ namespace GhostText.Clients.TelegramClients
             {
                 await telegramBotClient.SendMessage(
                     chatId: this.telegramSettings.ChannelId,
-                    text: "Xush kelibsiz");
+                    text: "Xush kelibsiz");  
             }
             else
             {
