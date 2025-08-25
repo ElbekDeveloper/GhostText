@@ -8,8 +8,6 @@ public class Message
     public Guid Id { get; set; }
     public string Text { get; set; }
     public DateTime CreateDate { get; set; } = DateTime.Now;
-    public DateTime CreateDate { get; set; }
-
     public Guid TelegramBotConfigurationId { get; set; }
     public TelegramBotConfiguration TelegramBotConfiguration { get; set; }
 }
