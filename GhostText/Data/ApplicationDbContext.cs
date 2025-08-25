@@ -13,7 +13,7 @@ namespace GhostText.Data
         public ApplicationDbContext(IConfiguration configuration) =>
             this.configuration = configuration;
 
-        public DbSet<Message> Messages => Set<Message>();
+        public DbSet<Message> Messages { get; set; }
         public DbSet<TelegramUser> TelegramUsers { get; set; }
         public DbSet<TelegramBotConfiguration> TelegramBotConfigurations { get; set; }
         public DbSet<User> Users { get; set; }

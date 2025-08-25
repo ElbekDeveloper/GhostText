@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace GhostText.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250822095129_AddAuthorization")]
-    partial class AddAuthorization
+    [Migration("20250825143138_AddInitialTables")]
+    partial class AddInitialTables
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -34,15 +34,20 @@ namespace GhostText.Migrations
                     b.Property<DateTime>("CreateDate")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<Guid>("TelegramBotConfigurationId")
+                        .HasColumnType("uuid");
+
                     b.Property<string>("Text")
                         .HasColumnType("text");
 
                     b.HasKey("Id");
 
+                    b.HasIndex("TelegramBotConfigurationId");
+
                     b.ToTable("Messages");
                 });
 
-            modelBuilder.Entity("GhostText.Models.TelegramBotConfiguration.TelegramBotConfiguration", b =>
+            modelBuilder.Entity("GhostText.Models.TelegramBotConfigurations.TelegramBotConfiguration", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -100,7 +105,7 @@ namespace GhostText.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<DateTimeOffset>("CreatedAt")
+                    b.Property<DateTimeOffset>("CreatedDate")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("FirstName")
@@ -118,7 +123,7 @@ namespace GhostText.Migrations
                     b.Property<int>("Role")
                         .HasColumnType("integer");
 
-                    b.Property<DateTimeOffset>("UpdatedAt")
+                    b.Property<DateTimeOffset>("UpdatedDate")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Username")
@@ -127,6 +132,17 @@ namespace GhostText.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("GhostText.Models.Message", b =>
+                {
+                    b.HasOne("GhostText.Models.TelegramBotConfigurations.TelegramBotConfiguration", "TelegramBotConfiguration")
+                        .WithMany()
+                        .HasForeignKey("TelegramBotConfigurationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("TelegramBotConfiguration");
                 });
 #pragma warning restore 612, 618
         }
