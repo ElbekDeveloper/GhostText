@@ -36,13 +36,7 @@ namespace GhostText.Clients.TelegramClients
             this.telegramUserService = telegramUserService;
             this.requestService = requestService;
         }
-
-        public TelegramClient(IRequestService requestService)
-        {
-            this.requestService = requestService;
-        }
         
-
         public void ListenTelegramBot()
         {
             this.botClient.StartReceiving(
