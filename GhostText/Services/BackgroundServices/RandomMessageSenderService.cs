@@ -3,8 +3,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using GhostText.Data;
-using GhostText.Models;
-using GhostText.Repositories;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Hosting;
 using Telegram.Bot;
 
@@ -13,26 +12,27 @@ namespace GhostText.Services.BackgroundServices
     public class RandomMessageSenderService : BackgroundService
     {
         private readonly ApplicationDbContext dbContext;
-        private readonly IMessageRepository messageRepository;
         private readonly ITelegramBotClient telegramBotClient;
-        private static readonly Random random = new Random();
 
         public RandomMessageSenderService(
-            IMessageRepository messageRepository,
             ITelegramBotClient telegramBotClient,
             ApplicationDbContext dbContext)
         {
-            this.messageRepository = messageRepository;
             this.telegramBotClient = telegramBotClient;
             this.dbContext = dbContext;
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            long channelId = this.dbContext
-                .TelegramBotConfigurations
-                .Select(bot => bot.ChannelId)
-                .FirstOrDefault();
+            long channelId = await this.dbContext.TelegramBotConfigurations
+                .Select(b => b.ChannelId)
+                .FirstOrDefaultAsync(stoppingToken);
+
+            if (channelId == 0)
+            {
+                Console.WriteLine("[MessageSender] ChannelId topilmadi. Xizmat to'xtaydi.");
+                return;
+            }
 
             TimeSpan interval = TimeSpan.FromMinutes(96);
 
@@ -40,35 +40,67 @@ namespace GhostText.Services.BackgroundServices
             {
                 try
                 {
-                    System.Collections.Generic.List<Message> allMessages = 
-                        this.messageRepository.SelectAllMessages().ToList();
+                    var selections = await this.dbContext.Messages
+                        .Where(m => !m.IsSent)
+                        .OrderBy(m => Guid.NewGuid())
+                        .Select(m => new { m.Id, m.Text })
+                        .Take(1)
+                        .ToListAsync(stoppingToken);
 
-                    if (!allMessages.Any())
+                    if (selections.Count == 0)
                     {
-                        Console.WriteLine("[RandomMessageSenderService] Hech qanday xabar topilmadi.");
-                        await Task.Delay(TimeSpan.FromMinutes(5), stoppingToken);
-                        continue;
+                        Console.WriteLine("[MessageSender] Jo'natilmagan xabar topilmadi.");
                     }
-
-                    if (allMessages.Any())
+                    else
                     {
-                        Message msg = allMessages[random.Next(allMessages.Count)];
-                        await this.telegramBotClient.SendMessage(
-                            chatId: channelId,
-                            text: msg.Text,
-                            cancellationToken: stoppingToken
-                        );
-                    }
+                        foreach (var select in selections)
+                        {
+                            int affected = await this.dbContext.Messages
+                                .Where(m => m.Id == select.Id && !m.IsSent)
+                                .ExecuteUpdateAsync(s => s
+                                    .SetProperty(m => m.IsSent, true)
+                                    .SetProperty(m => m.SentAt, DateTime.UtcNow),
+                                    stoppingToken);
 
-                    await Task.Delay(interval, stoppingToken);
+                            if (affected == 0) continue;
+
+                            bool sentOk = false;
+                            try
+                            {
+                                await this.telegramBotClient.SendMessage(
+                                    chatId: channelId,
+                                    text: select.Text,
+                                    cancellationToken: stoppingToken);
+
+                                sentOk = true;
+                            }
+                            catch (Exception ex)
+                            {
+                                Console.WriteLine($"[MessageSender] send failed: {ex.Message}");
+                            }
+
+                            if (!sentOk)
+                            {
+                                await this.dbContext.Messages
+                                    .Where(m => m.Id == select.Id)
+                                    .ExecuteUpdateAsync(s => s
+                                        .SetProperty(m => m.IsSent, false)
+                                        .SetProperty(m => m.SentAt, (DateTime?)null),
+                                        stoppingToken);
+                            }
+
+                            await Task.Delay(interval, stoppingToken);
+                        }
+                    }
                 }
-                catch (TaskCanceledException)
-                { }
+                catch (TaskCanceledException) { }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"[RandomMessageSenderService] Error: {ex.Message}");
+                    Console.WriteLine($"[MessageSender] Error: {ex.Message}");
+                    await Task.Delay(TimeSpan.FromSeconds(10), stoppingToken);
                 }
             }
         }
+
     }
 }
