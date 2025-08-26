@@ -27,12 +27,9 @@ namespace GhostText.Services
             else if (this.requestService.ContainsForbiddenWord(message.Text))
                 throw new ArgumentException("You cannot add a forbidden word.");
 
-            else
-            {
-                message.CreateDate = DateTime.UtcNow;
+            message.CreateDate = DateTime.UtcNow;
 
-                return await this.messageRepository.InsertMessageAsync(message);
-            }
+            return await this.messageRepository.InsertMessageAsync(message);
         }
 
         public IQueryable<Message> RetrieveAllMessages() =>
