@@ -50,6 +50,8 @@ namespace GhostText.Services.BackgroundServices
                     if (selections.Count == 0)
                     {
                         Console.WriteLine("[MessageSender] Jo'natilmagan xabar topilmadi.");
+
+                        await Task.Delay(interval, stoppingToken);
                     }
                     else
                     {
