@@ -92,17 +92,18 @@ namespace GhostText.Clients.TelegramClients
             }
             else
             {
-                if (requestService.ContainsForbiddenWord(messageText) is false)
+                if (messageText.Length > 120)
+                {
+                    await telegramBotClient.SendMessage(
+                        chatId: update.Message.Chat.Id,
+                        text: "we cannot sent your text, because your text's length is g" +
+                              "reater than 120 characters.Please try with less characters. ");
+                }
+                else if (requestService.ContainsForbiddenWord(messageText) is false)
                 {
                     await telegramBotClient.SendMessage(
                         chatId: this.telegramSettings.ChannelId,
                         text: $"{messageText}");
-                }
-                else if (messageText.Length > 120)
-                {
-                    await telegramBotClient.SendMessage(
-                        chatId: update.Message.Chat.Id,
-                        text: "we cannot sent your text, because your text's length is greater than 120 characters.Please try with less characters. ");
                 }
                 else
                 {

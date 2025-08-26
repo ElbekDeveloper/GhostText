@@ -24,10 +24,10 @@ namespace GhostText.Services
             if (string.IsNullOrWhiteSpace(message.Text))
                 throw new ArgumentException("Message text cannot be empty.");
 
-            else if (this.requestService.ContainsForbiddenWord(message.Text))
+            if (this.requestService.ContainsForbiddenWord(message.Text))
                 return null;
             
-            else if(message.Text.Length > 120)
+            if(message.Text.Length > 120)
                 return null;
 
             message.CreateDate = DateTime.UtcNow;
