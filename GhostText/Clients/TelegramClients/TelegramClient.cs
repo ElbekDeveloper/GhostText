@@ -96,8 +96,8 @@ namespace GhostText.Clients.TelegramClients
                 {
                     await telegramBotClient.SendMessage(
                         chatId: update.Message.Chat.Id,
-                        text: "we cannot sent your text, because your text's length is g" +
-                              "reater than 120 characters.Please try with less characters. ");
+                        text: "we cannot sent your text, because your text's length is" +
+                              "greater than 120 characters.Please try with less characters. ");
                 }
                 else if (requestService.ContainsForbiddenWord(messageText) is false)
                 {
