@@ -25,7 +25,7 @@ namespace GhostText.Services
                 throw new ArgumentException("Message text cannot be empty.");
 
             else if (this.requestService.ContainsForbiddenWord(message.Text))
-                throw new ArgumentException("You cannot add a forbidden word.");
+                return null;
 
             message.CreateDate = DateTime.UtcNow;
 
