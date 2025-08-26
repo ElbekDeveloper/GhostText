@@ -1,35 +1,41 @@
-﻿using System;
+using System;
+using Coravel.Invocable;
+using GhostText.Repositories;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using GhostText.Repositories;
 using Microsoft.Extensions.Hosting;
 
-namespace GhostText.Services.TelegramBotBackgroundService
+namespace GhostText.Services.Invocables
 {
-    public class TelegramBotBackgroundService : BackgroundService
+    public class MessageCleanupInvocable : IInvocable
     {
         private readonly IMessageRepository messageRepository;
-        public TelegramBotBackgroundService(IMessageRepository messageRepository)
+
+        public MessageCleanupInvocable(IMessageRepository messageRepository)
         {
             this.messageRepository = messageRepository;
         }
-        protected override async Task ExecuteAsync(CancellationToken stoppingToken)
-        {
-            while (!stoppingToken.IsCancellationRequested)
-            {
-                try
-                {
-                    await this.messageRepository.RemoveRangeAsync();
 
-                    await Task.Delay(TimeSpan.FromDays(1), stoppingToken);
-                }
-                catch (TaskCanceledException)
+        public async Task Invoke()
+        {
+            try
+            {
+                var messages = await this.messageRepository.GetAllAsync();
+
+                var oldMessages = messages
+                    .Where(m => m.CreateDate <= DateTime.UtcNow.AddDays(-3))
+                    .ToList();
+
+                if (oldMessages.Any())
                 {
+                    await this.messageRepository.RemoveRangeAsync(oldMessages);
                 }
-                catch (Exception ex)
-                {
-                    Console.WriteLine($"[MessageCleanupService] Error: {ex.Message}");
-                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[MessageCleanupInvocable] Xatolik: {ex.Message}");
             }
         }
     }

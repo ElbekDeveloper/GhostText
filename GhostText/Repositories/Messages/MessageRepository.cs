@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using GhostText.Data;
 using GhostText.Models;
+using System.Collections.Generic;
 
 namespace GhostText.Repositories
 {
@@ -44,12 +45,12 @@ namespace GhostText.Repositories
 
             return message;
         }
-        public async ValueTask<int> RemoveRangeAsync()
+
+        public async ValueTask RemoveRangeAsync(List<Message> messages)
         {
-            var oldMessage = this.applicationDbContext.Messages
-               .Where(message => message.CreateDate < DateTime.UtcNow.AddDays(-3));
-            this.applicationDbContext.Messages.RemoveRange(oldMessage);
-            return await this.applicationDbContext.SaveChangesAsync();
+            this.applicationDbContext.Messages.RemoveRange(messages);
+
+            await this.applicationDbContext.SaveChangesAsync();
         }
     }
 }
