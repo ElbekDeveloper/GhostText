@@ -31,15 +31,31 @@ namespace GhostText.Migrations
                     b.Property<DateTime>("CreateDate")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<bool>("IsSent")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(false);
+
+                    b.Property<DateTime?>("SentAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("TelegramBotConfigurationId")
+                        .HasColumnType("uuid");
+
                     b.Property<string>("Text")
                         .HasColumnType("text");
 
                     b.HasKey("Id");
 
+                    b.HasIndex("TelegramBotConfigurationId");
+
+                    b.HasIndex("IsSent", "CreateDate")
+                        .HasDatabaseName("ix_messages_issent_createdate");
+
                     b.ToTable("Messages");
                 });
 
-            modelBuilder.Entity("GhostText.Models.TelegramBotConfiguration.TelegramBotConfiguration", b =>
+            modelBuilder.Entity("GhostText.Models.TelegramBotConfigurations.TelegramBotConfiguration", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -124,6 +140,17 @@ namespace GhostText.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("GhostText.Models.Message", b =>
+                {
+                    b.HasOne("GhostText.Models.TelegramBotConfigurations.TelegramBotConfiguration", "TelegramBotConfiguration")
+                        .WithMany()
+                        .HasForeignKey("TelegramBotConfigurationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("TelegramBotConfiguration");
                 });
 #pragma warning restore 612, 618
         }

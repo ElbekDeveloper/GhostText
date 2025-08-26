@@ -2,6 +2,7 @@
 using GhostText.Models.TelegramBotConfigurations;
 using GhostText.Models.Users;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.Extensions.Configuration;
 
 namespace GhostText.Data
@@ -13,7 +14,7 @@ namespace GhostText.Data
         public ApplicationDbContext(IConfiguration configuration) =>
             this.configuration = configuration;
 
-        public DbSet<Message> Messages => Set<Message>();
+        public DbSet<Message> Messages { get; set; }
         public DbSet<TelegramUser> TelegramUsers { get; set; }
         public DbSet<TelegramBotConfiguration> TelegramBotConfigurations { get; set; }
         public DbSet<User> Users { get; set; }
@@ -33,6 +34,14 @@ namespace GhostText.Data
             modelBuilder.Entity<TelegramBotConfiguration>()
                 .HasIndex(telegramBotConfiguration => telegramBotConfiguration.Token)
                 .IsUnique(true);
+
+            EntityTypeBuilder<Message> messageEntity = modelBuilder.Entity<Message>();
+
+            messageEntity.Property(m => m.IsSent)
+                         .HasDefaultValue(false);
+
+            messageEntity.HasIndex(m => new { m.IsSent, m.CreateDate })
+                         .HasDatabaseName("ix_messages_issent_createdate");
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

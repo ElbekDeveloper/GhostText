@@ -5,20 +5,23 @@ using GhostText.Repositories;
 using GhostText.Repositories.TelegramBotConfigurations;
 using GhostText.Repositories.Users;
 using GhostText.Services;
-using GhostText.Services.TelegramBotBackgroundService;
+using GhostText.Services.Accounts;
+using GhostText.Services.BackgroundServices;
 using GhostText.Services.Levenshteins;
 using GhostText.Services.Requests;
-using GhostText.Services.Accounts;
+using GhostText.Services.TelegramBotBackgroundService;
 using GhostText.Services.TelegramBotConfigurations;
 using GhostText.Services.TelegramBotListeners;
 using GhostText.Services.Users;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Scalar.AspNetCore;
 using System.Text;
+using Telegram.Bot;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
@@ -46,6 +49,13 @@ builder.Services.AddSingleton<TelegramBotListenersService>();
 builder.Services.AddScheduler();
 builder.Services.AddTransient<TelegramBotBackgroundService, TelegramBotBackgroundService>();
 
+builder.Services.AddSingleton<ITelegramBotClient>(sp =>
+    new TelegramBotClient(builder.Configuration["TelegramSettings:BotToken"])
+);
+builder.Services.AddSingleton<RandomMessageSenderService>();
+builder.Services.AddHostedService<RandomMessageSenderService>(provider =>
+    provider.GetRequiredService<RandomMessageSenderService>());
+
 WebApplication app = builder.Build();
 
 if (app.Environment.IsDevelopment())
@@ -66,6 +76,13 @@ app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
+
+using (IServiceScope scope = app.Services.CreateScope())
+{
+    ApplicationDbContext applicationDbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+    applicationDbContext.Database.Migrate();
+}
+
 app.Run();
 
 static void AddJwtAuthentication(WebApplicationBuilder builder)
