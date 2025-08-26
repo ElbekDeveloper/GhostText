@@ -98,6 +98,12 @@ namespace GhostText.Clients.TelegramClients
                         chatId: this.telegramSettings.ChannelId,
                         text: $"{messageText}");
                 }
+                else if (messageText.Length > 120)
+                {
+                    await telegramBotClient.SendMessage(
+                        chatId: update.Message.Chat.Id,
+                        text: "we cannot sent your text, because your text's length is greater than 120 characters.Please try with less characters. ");
+                }
                 else
                 {
                     await telegramBotClient.SendMessage(

@@ -26,6 +26,9 @@ namespace GhostText.Services
 
             else if (this.requestService.ContainsForbiddenWord(message.Text))
                 return null;
+            
+            else if(message.Text.Length > 120)
+                return null;
 
             message.CreateDate = DateTime.UtcNow;
 
