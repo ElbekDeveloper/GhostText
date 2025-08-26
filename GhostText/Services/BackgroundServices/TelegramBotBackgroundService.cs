@@ -1,42 +1,38 @@
 using System;
+using System.Linq;
+using System.Threading.Tasks;
 using Coravel.Invocable;
 using GhostText.Repositories;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using GhostText.Repositories;
-using Microsoft.Extensions.Hosting;
 
-namespace GhostText.Services.Invocables
+namespace GhostText.Services.BackgroundServices;
+
+public class TelegramBotBackgroundService:IInvocable
 {
-    public class MessageCleanupInvocable : IInvocable
+    private readonly IMessageRepository messageRepository;
+
+    public TelegramBotBackgroundService(IMessageRepository messageRepository)
     {
-        private readonly IMessageRepository messageRepository;
+        this.messageRepository = messageRepository;
+    }
 
-        public MessageCleanupInvocable(IMessageRepository messageRepository)
+    public async Task Invoke()
+    {
+        try
         {
-            this.messageRepository = messageRepository;
+            var messages = this.messageRepository.SelectAllMessages();
+
+            var oldMessages = messages
+                .Where(m => m.CreateDate <= DateTime.UtcNow.AddDays(-3))
+                .ToList();
+
+            if (oldMessages.Any())
+            {
+                await this.messageRepository.RemoveRangeAsync(oldMessages);
+            }
         }
-
-        public async Task Invoke()
+        catch (Exception ex)
         {
-            try
-            {
-                var messages = await this.messageRepository.GetAllAsync();
-
-                var oldMessages = messages
-                    .Where(m => m.CreateDate <= DateTime.UtcNow.AddDays(-3))
-                    .ToList();
-
-                if (oldMessages.Any())
-                {
-                    await this.messageRepository.RemoveRangeAsync(oldMessages);
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"[MessageCleanupInvocable] Xatolik: {ex.Message}");
-            }
+            Console.WriteLine($"[MessageCleanupInvocable] Xatolik: {ex.Message}");
         }
     }
 }

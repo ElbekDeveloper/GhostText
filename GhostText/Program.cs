@@ -9,7 +9,6 @@ using GhostText.Services.Accounts;
 using GhostText.Services.BackgroundServices;
 using GhostText.Services.Levenshteins;
 using GhostText.Services.Requests;
-using GhostText.Services.TelegramBotBackgroundService;
 using GhostText.Services.TelegramBotConfigurations;
 using GhostText.Services.TelegramBotListeners;
 using GhostText.Services.Users;
@@ -45,9 +44,9 @@ builder.Services.AddTransient<ITelegramBotConfigurationRepository, TelegramBotCo
 builder.Services.AddTransient<ITelegramBotConfigurationService, TelegramBotConfigurationService>();
 builder.Services.AddTransient<ILevenshteinService, LevenshteinService>();
 builder.Services.AddTransient<IRequestService, RequestService>();
+builder.Services.AddTransient<TelegramBotBackgroundService>();
 builder.Services.AddSingleton<TelegramBotListenersService>();
 builder.Services.AddScheduler();
-builder.Services.AddTransient<TelegramBotBackgroundService, TelegramBotBackgroundService>();
 
 builder.Services.AddSingleton<ITelegramBotClient>(sp =>
     new TelegramBotClient(builder.Configuration["TelegramSettings:BotToken"])

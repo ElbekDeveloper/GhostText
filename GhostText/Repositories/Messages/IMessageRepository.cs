@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using GhostText.Models;
 using System.Linq;
@@ -12,6 +13,6 @@ namespace GhostText.Repositories
         ValueTask<Message> SelectMessageByIdAsync(Guid messageId);
         ValueTask<Message> UpdateMessageAsync(Message message);
         ValueTask<Message> DeleteMessageAsync(Message message);
-        ValueTask<int> RemoveRangeAsync();
+        ValueTask RemoveRangeAsync(List<Message> messages);
     }
 }
