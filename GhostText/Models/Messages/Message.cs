@@ -14,4 +14,6 @@ public class Message
 
     public Guid TelegramBotConfigurationId { get; set; }
     public TelegramBotConfiguration TelegramBotConfiguration { get; set; }
+
+    public long ChatId { get; set; }
 }

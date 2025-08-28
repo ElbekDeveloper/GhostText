@@ -24,76 +24,85 @@ namespace GhostText.Services.BackgroundServices
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            long channelId = await this.dbContext.TelegramBotConfigurations
-                .Select(b => b.ChannelId)
-                .FirstOrDefaultAsync(stoppingToken);
-
-            if (channelId == 0)
-            {
-                Console.WriteLine("[MessageSender] ChannelId topilmadi. Xizmat to'xtaydi.");
-                return;
-            }
-
-            TimeSpan interval = TimeSpan.FromMinutes(96);
+            TimeSpan intervalBetweenCycles = TimeSpan.FromMinutes(60);
+            TimeSpan intervalBetweenSends = TimeSpan.FromSeconds(1.2);
 
             while (!stoppingToken.IsCancellationRequested)
             {
                 try
                 {
-                    var selections = await this.dbContext.Messages
-                        .Where(m => !m.IsSent)
-                        .OrderBy(m => Guid.NewGuid())
-                        .Select(m => new { m.Id, m.Text })
-                        .Take(1)
+                    var candidates = await dbContext.Messages
+                        .Where(m => !m.IsSent && m.ChatId != 0)
+                        .OrderBy(_ => Guid.NewGuid())
+                        .Select(m => new {
+                            m.Id,
+                            m.Text,
+                            m.ChatId,
+                            m.TelegramBotConfigurationId
+                        })
+                        .Take(100)
                         .ToListAsync(stoppingToken);
 
-                    if (selections.Count == 0)
+                    if (candidates.Count == 0)
                     {
-                        Console.WriteLine("[MessageSender] Jo'natilmagan xabar topilmadi.");
-
-                        await Task.Delay(interval, stoppingToken);
+                        await Task.Delay(intervalBetweenCycles, stoppingToken);
+                        continue;
                     }
-                    else
+
+                    var picks = candidates
+                        .GroupBy(x => new { x.TelegramBotConfigurationId, x.ChatId })
+                        .Select(g => g.First())
+                        .ToList();
+
+                    foreach (var select in picks)
                     {
-                        foreach (var select in selections)
+                        int affected = await dbContext.Messages
+                            .Where(m => m.Id == select.Id && !m.IsSent)
+                            .ExecuteUpdateAsync(s => s
+                                .SetProperty(m => m.IsSent, true)
+                                .SetProperty(m => m.SentAt, DateTime.UtcNow),
+                                stoppingToken);
+
+                        if (affected == 0) continue;
+
+                        bool sentOk = false;
+                        try
                         {
-                            int affected = await this.dbContext.Messages
-                                .Where(m => m.Id == select.Id && !m.IsSent)
-                                .ExecuteUpdateAsync(s => s
-                                    .SetProperty(m => m.IsSent, true)
-                                    .SetProperty(m => m.SentAt, DateTime.UtcNow),
-                                    stoppingToken);
+                            string token = await dbContext.TelegramBotConfigurations
+                                .Where(b => b.Id == select.TelegramBotConfigurationId)
+                                .Select(b => b.Token)
+                                .FirstAsync(stoppingToken);
 
-                            if (affected == 0) continue;
+                            TelegramBotClient client = new Telegram.Bot.TelegramBotClient(token);
 
-                            bool sentOk = false;
-                            try
-                            {
-                                await this.telegramBotClient.SendMessage(
-                                    chatId: channelId,
-                                    text: select.Text,
-                                    cancellationToken: stoppingToken);
+                            await client.SendMessage(
+                                chatId: select.ChatId,
+                                text: select.Text ?? string.Empty,
+                                cancellationToken: stoppingToken);
 
-                                sentOk = true;
-                            }
-                            catch (Exception ex)
-                            {
-                                Console.WriteLine($"[MessageSender] send failed: {ex.Message}");
-                            }
-
-                            if (!sentOk)
-                            {
-                                await this.dbContext.Messages
-                                    .Where(m => m.Id == select.Id)
-                                    .ExecuteUpdateAsync(s => s
-                                        .SetProperty(m => m.IsSent, false)
-                                        .SetProperty(m => m.SentAt, (DateTime?)null),
-                                        stoppingToken);
-                            }
-
-                            await Task.Delay(interval, stoppingToken);
+                            sentOk = true;
                         }
+
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine($"[MessageSender] send failed: {ex.Message} " +
+                                $"(bot:{select.TelegramBotConfigurationId}, chat:{select.ChatId})");
+                        }
+
+                        if (!sentOk)
+                        {
+                            await dbContext.Messages
+                                .Where(m => m.Id == select.Id)
+                                .ExecuteUpdateAsync(s => s
+                                    .SetProperty(m => m.IsSent, false)
+                                    .SetProperty(m => m.SentAt, (DateTime?)null),
+                                    stoppingToken);
+                        }
+
+                        await Task.Delay(intervalBetweenSends, stoppingToken);
                     }
+
+                    await Task.Delay(intervalBetweenCycles, stoppingToken);
                 }
                 catch (TaskCanceledException) { }
                 catch (Exception ex)
@@ -103,6 +112,5 @@ namespace GhostText.Services.BackgroundServices
                 }
             }
         }
-
     }
 }
