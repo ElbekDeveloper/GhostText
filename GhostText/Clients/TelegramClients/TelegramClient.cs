@@ -35,8 +35,7 @@ namespace GhostText.Clients.TelegramClients
                 BotToken = botToken
             };
 
-            this.botClient = new TelegramBotClient(
-                    token: this.telegramSettings.BotToken);
+            this.botClient = new TelegramBotClient(this.telegramSettings.BotToken);
             this.telegramUserService = telegramUserService;
             this.messageService = messageService;
             this.requestService = requestService;
@@ -54,73 +53,96 @@ namespace GhostText.Clients.TelegramClients
         }
 
         private async Task HandleUpdateAsync(
-            ITelegramBotClient telegramBotClient, 
-            Update update, 
+            ITelegramBotClient telegramBotClient,
+            Update update,
             CancellationToken token)
         {
-            if (update.Type is not UpdateType.Message) 
-                return;
-            
-            if (string.IsNullOrWhiteSpace(update.Message.Text)) 
+            if (update.Type != UpdateType.Message || update.Message is null)
                 return;
 
-            TelegramUser telegramUser = new TelegramUser
-            {
-                TelegramId = update.Message.From.Id,
-                UserName = update.Message.From.Username ?? "NoUsername",
-            };
+            var message = update.Message;
+            string text = message.Text;
 
-            telegramUser = await telegramUserService.EnsureTelegramUserAsync(telegramUser);
+            if (string.IsNullOrWhiteSpace(text))
+                return;
 
-            string messageText = update.Message.Text;
+            long targetChannelId = this.telegramSettings.ChannelId;
 
-            Models.Message telegramMessage = new Models.Message
-            {
-                Id = Guid.NewGuid(),
-                Text = messageText,
-                CreateDate = DateTime.UtcNow,
-                TelegramBotConfigurationId = this.telegramBotConfigurationId
-            };
-
-            await messageService.AddMessageAsync(telegramMessage);
-
-            if (messageText.StartsWith("/start"))
+            if (text.StartsWith("/start", StringComparison.OrdinalIgnoreCase))
             {
                 await telegramBotClient.SendMessage(
-                    chatId: this.telegramSettings.ChannelId,
-                    text: "Xush kelibsiz");  
+                    chatId: message.Chat.Id,
+                    text: "Xush kelibsiz!",
+                    cancellationToken: token);
+                return;
             }
-            else
+
+            if (text.Length > 120)
             {
-                if (messageText.Length > 120)
+                await telegramBotClient.SendMessage(
+                    chatId: message.Chat.Id,
+                    text: "Matn 120 belgidan uzun. Iltimos, qisqartirib yuboring.",
+                    cancellationToken: token);
+                return;
+            }
+
+            if (requestService.ContainsForbiddenWord(text))
+            {
+                await telegramBotClient.SendMessage(
+                    chatId: message.Chat.Id,
+                    text: "Matnda taqiqlangan so‘z bor.",
+                    cancellationToken: token);
+                return;
+            }
+
+            bool isFromPrivate = message.Chat.Type == ChatType.Private;
+            bool isSameChat = message.Chat.Id == targetChannelId;
+
+            if (isFromPrivate || !isSameChat)
+            {
+                await telegramBotClient.SendMessage(
+                    chatId: targetChannelId,
+                    text: text,
+                    cancellationToken: token);
+            }
+
+            bool isInbound;
+
+            if (message.From is null)
+                isInbound = true;
+            else if (message.From.IsBot)
+                isInbound = false;
+            else
+                isInbound = true;
+
+            if (isInbound)
+            {
+                var telegramUser = new TelegramUser
                 {
-                    await telegramBotClient.SendMessage(
-                        chatId: update.Message.Chat.Id,
-                        text: "we cannot sent your text, because your text's length is" +
-                              "greater than 120 characters.Please try with less characters. ");
-                }
-                else if (requestService.ContainsForbiddenWord(messageText) is false)
+                    TelegramId = message.From!.Id,
+                    UserName = message.From.Username ?? "NoUsername",
+                };
+                await telegramUserService.EnsureTelegramUserAsync(telegramUser);
+
+                var telegramMessage = new Models.Message
                 {
-                    await telegramBotClient.SendMessage(
-                        chatId: this.telegramSettings.ChannelId,
-                        text: $"{messageText}");
-                }
-                else
-                {
-                    await telegramBotClient.SendMessage(
-                        chatId: update.Message.Chat.Id,
-                        text: "Your text has a forbidden word.");
-                }
+                    Id = Guid.NewGuid(),
+                    Text = text,
+                    CreateDate = DateTime.UtcNow,
+                    TelegramBotConfigurationId = this.telegramBotConfigurationId,
+                    ChatId = targetChannelId
+                };
+
+                await messageService.AddMessageAsync(telegramMessage);
             }
         }
 
         private Task HandleErrorAsync(
-            ITelegramBotClient telegramBotCLient, 
-            Exception exception, 
+            ITelegramBotClient telegramBotClient,
+            Exception exception,
             CancellationToken token)
         {
             Console.WriteLine($"Error: {exception.Message}");
-
             return Task.CompletedTask;
         }
 

@@ -8,6 +8,6 @@ namespace GhostText.Models.TelegramBotConfigurations
         public long ChannelId { get; set; }
         public string Token { get; set; }
         public DateTimeOffset CreatedDate { get; set; }
-        public DateTimeOffset UpdatedDate { get; set;}
+        public DateTimeOffset UpdatedDate { get; set; }
     }
 }
