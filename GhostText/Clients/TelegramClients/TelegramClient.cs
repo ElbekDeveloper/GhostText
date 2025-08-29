@@ -68,7 +68,7 @@ namespace GhostText.Clients.TelegramClients
             var message = update.Message;
             string text = message.Text;
 
-            if (message.Chat.Type is ChatType.Private)
+            if (message.Chat.Type is not ChatType.Private)
             {
                 return;
             }
@@ -124,6 +124,11 @@ namespace GhostText.Clients.TelegramClients
             };
 
             await messageService.AddMessageAsync(telegramMessage);
+
+            await telegramBotClient.SendMessage(
+                    chatId: message.Chat.Id,
+                    text: "Qabul qilindi tez orada kanalda chiqadi!",
+                    cancellationToken: token);
         }
 
         private Task HandleErrorAsync(
