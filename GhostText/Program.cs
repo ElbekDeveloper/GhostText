@@ -14,13 +14,11 @@ using GhostText.Services.TelegramBotListeners;
 using GhostText.Services.Users;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Scalar.AspNetCore;
 using System.Text;
-using Telegram.Bot;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
@@ -64,7 +62,7 @@ app.Services.UseScheduler(scheduler =>
 
 
     scheduler.Schedule<RandomMessageSenderService>()
-        .EveryFifteenMinutes().PreventOverlapping(nameof(RandomMessageSenderService));
+        .EveryFiveMinutes().PreventOverlapping(nameof(RandomMessageSenderService));
 });
 
 app.UseMiddleware<GlobalErrorHandlingMiddleware>();
