@@ -4,19 +4,16 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using GhostText.Models;
 using GhostText.Repositories;
-using GhostText.Services.Requests;
 
 namespace GhostText.Services
 {
     public class MessageService : IMessageService
     {
         private readonly IMessageRepository messageRepository;
-        private readonly IRequestService requestService;
 
-        public MessageService(IMessageRepository messageRepository, IRequestService requestService)
+        public MessageService(IMessageRepository messageRepository)
         {
             this.messageRepository = messageRepository;
-            this.requestService = requestService;
         }
 
         public async ValueTask<Message> AddMessageAsync(Message message)
@@ -24,13 +21,10 @@ namespace GhostText.Services
             if (string.IsNullOrWhiteSpace(message.Text))
                 throw new ArgumentException("Message text cannot be empty.");
 
-            if (this.requestService.ContainsForbiddenWord(message.Text))
-                return null;
-            
-            if(message.Text.Length > 120)
-                return null;
+            if(message.Text.Length > 120 || message.Text.Length < 15)
+                throw new ArgumentException("Messge length should be between 15 and 120");
 
-            message.CreateDate = DateTime.UtcNow;
+            message.CreateDate = DateTimeOffset.UtcNow;
 
             return await this.messageRepository.InsertMessageAsync(message);
         }

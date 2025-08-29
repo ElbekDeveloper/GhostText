@@ -65,7 +65,9 @@ namespace GhostText.Migrations
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     Text = table.Column<string>(type: "text", nullable: true),
-                    CreateDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    CreateDate = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
+                    IsSent = table.Column<bool>(type: "boolean", nullable: false, defaultValue: false),
+                    SentAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
                     TelegramBotConfigurationId = table.Column<Guid>(type: "uuid", nullable: false)
                 },
                 constraints: table =>
@@ -78,6 +80,11 @@ namespace GhostText.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
+
+            migrationBuilder.CreateIndex(
+                name: "ix_messages_issent_createdate",
+                table: "Messages",
+                columns: new[] { "IsSent", "CreateDate" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Messages_TelegramBotConfigurationId",

@@ -45,15 +45,9 @@ builder.Services.AddTransient<ITelegramBotConfigurationService, TelegramBotConfi
 builder.Services.AddTransient<ILevenshteinService, LevenshteinService>();
 builder.Services.AddTransient<IRequestService, RequestService>();
 builder.Services.AddTransient<TelegramBotBackgroundService>();
+builder.Services.AddTransient<RandomMessageSenderService>();
 builder.Services.AddSingleton<TelegramBotListenersService>();
 builder.Services.AddScheduler();
-
-builder.Services.AddSingleton<ITelegramBotClient>(sp =>
-    new TelegramBotClient(builder.Configuration["TelegramSettings:BotToken"])
-);
-builder.Services.AddSingleton<RandomMessageSenderService>();
-builder.Services.AddHostedService<RandomMessageSenderService>(provider =>
-    provider.GetRequiredService<RandomMessageSenderService>());
 
 WebApplication app = builder.Build();
 
@@ -67,6 +61,10 @@ app.Services.UseScheduler(scheduler =>
 {
     scheduler.Schedule<TelegramBotListenersService>()
         .EverySeconds(1).PreventOverlapping(nameof(TelegramBotListenersService));
+
+
+    scheduler.Schedule<RandomMessageSenderService>()
+        .EveryFifteenMinutes().PreventOverlapping(nameof(RandomMessageSenderService));
 });
 
 app.UseMiddleware<GlobalErrorHandlingMiddleware>();
@@ -79,7 +77,7 @@ app.MapControllers();
 using (IServiceScope scope = app.Services.CreateScope())
 {
     ApplicationDbContext applicationDbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-    applicationDbContext.Database.Migrate();
+    //applicationDbContext.Database.Migrate();
 }
 
 app.Run();

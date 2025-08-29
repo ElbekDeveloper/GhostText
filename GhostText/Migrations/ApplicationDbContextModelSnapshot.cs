@@ -28,10 +28,7 @@ namespace GhostText.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<long>("ChatId")
-                        .HasColumnType("bigint");
-
-                    b.Property<DateTime>("CreateDate")
+                    b.Property<DateTimeOffset>("CreateDate")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<bool>("IsSent")
@@ -39,7 +36,7 @@ namespace GhostText.Migrations
                         .HasColumnType("boolean")
                         .HasDefaultValue(false);
 
-                    b.Property<DateTime?>("SentAt")
+                    b.Property<DateTimeOffset?>("SentAt")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<Guid>("TelegramBotConfigurationId")
