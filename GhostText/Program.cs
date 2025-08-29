@@ -68,18 +68,10 @@ app.Services.UseScheduler(scheduler =>
 });
 
 app.UseMiddleware<GlobalErrorHandlingMiddleware>();
-app.UseExceptionHandler();
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
-
-using (IServiceScope scope = app.Services.CreateScope())
-{
-    ApplicationDbContext applicationDbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-    //applicationDbContext.Database.Migrate();
-}
-
 app.Run();
 
 static void AddJwtAuthentication(WebApplicationBuilder builder)
