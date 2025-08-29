@@ -12,6 +12,7 @@ namespace GhostText.Services.TelegramBotConfigurations
         public TelegramBotConfigurationService(ITelegramBotConfigurationRepository telegramBotConfigurationRepository) =>
             this.telegramBotConfigurationRepository = telegramBotConfigurationRepository;
 
+        // TODO: Validate ChannelId not to be 0, Token And Id
         public async ValueTask<TelegramBotConfiguration> AddTelegramBotConfigurationAsync(TelegramBotConfiguration configuration) =>
             await this.telegramBotConfigurationRepository.InsertChannelAsync(configuration);
 

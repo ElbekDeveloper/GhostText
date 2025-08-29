@@ -1,12 +1,14 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Coravel.Invocable;
+using GhostText.Models;
 using GhostText.Repositories;
 
 namespace GhostText.Services.BackgroundServices;
 
-public class TelegramBotBackgroundService:IInvocable
+public class TelegramBotBackgroundService : IInvocable
 {
     private readonly IMessageRepository messageRepository;
 
@@ -19,10 +21,10 @@ public class TelegramBotBackgroundService:IInvocable
     {
         try
         {
-            var messages = this.messageRepository.SelectAllMessages();
+            IQueryable<Message> messages = this.messageRepository.SelectAllMessages();
 
-            var oldMessages = messages
-                .Where(m => m.CreateDate <= DateTime.UtcNow.AddDays(-3))
+            List<Message> oldMessages = messages
+                .Where(m => m.CreateDate <= DateTimeOffset.UtcNow.AddDays(-2))
                 .ToList();
 
             if (oldMessages.Any())

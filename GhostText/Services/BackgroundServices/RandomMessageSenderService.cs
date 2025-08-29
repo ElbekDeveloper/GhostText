@@ -1,114 +1,59 @@
-﻿using System;
+﻿using Coravel.Invocable;
+using GhostText.Models;
+using GhostText.Models.TelegramBotConfigurations;
+using GhostText.Services.TelegramBotConfigurations;
+using System;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
-using GhostText.Data;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Hosting;
 using Telegram.Bot;
 
 namespace GhostText.Services.BackgroundServices
 {
-    public class RandomMessageSenderService : BackgroundService
+    public class RandomMessageSenderService : IInvocable
     {
-        private readonly ApplicationDbContext dbContext;
-        private readonly ITelegramBotClient telegramBotClient;
+        private readonly ITelegramBotConfigurationService telegramBotConfigurationService;
+        private readonly IMessageService messageService;
 
         public RandomMessageSenderService(
-            ITelegramBotClient telegramBotClient,
-            ApplicationDbContext dbContext)
+            ITelegramBotConfigurationService telegramBotConfigurationService,
+            IMessageService messageService)
         {
-            this.telegramBotClient = telegramBotClient;
-            this.dbContext = dbContext;
+            this.telegramBotConfigurationService = telegramBotConfigurationService;
+            this.messageService = messageService;
         }
 
-        protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+        public async Task Invoke()
         {
-            TimeSpan intervalBetweenCycles = TimeSpan.FromMinutes(60);
-            TimeSpan intervalBetweenSends = TimeSpan.FromSeconds(1.2);
+            IQueryable<TelegramBotConfiguration> telegramBotConfigurations =
+                this.telegramBotConfigurationService.RetrieveAllTelegramBotConfigurations();
 
-            while (!stoppingToken.IsCancellationRequested)
+            foreach (TelegramBotConfiguration telegramBotConfiguration in telegramBotConfigurations)
             {
                 try
                 {
-                    var candidates = await dbContext.Messages
-                        .Where(m => !m.IsSent && m.ChatId != 0)
-                        .OrderBy(_ => Guid.NewGuid())
-                        .Select(m => new {
-                            m.Id,
-                            m.Text,
-                            m.ChatId,
-                            m.TelegramBotConfigurationId
-                        })
-                        .Take(100)
-                        .ToListAsync(stoppingToken);
+                    Message randomMessage =
+                        this.messageService.RetrieveAllMessages().Where(message =>
+                            message.TelegramBotConfigurationId == telegramBotConfiguration.Id
+                            && message.IsSent == false)
+                                .OrderBy(message => Guid.NewGuid())
+                                    .FirstOrDefault();
 
-                    if (candidates.Count == 0)
-                    {
-                        await Task.Delay(intervalBetweenCycles, stoppingToken);
+                    if (randomMessage is null)
                         continue;
-                    }
 
-                    var picks = candidates
-                        .GroupBy(x => new { x.TelegramBotConfigurationId, x.ChatId })
-                        .Select(g => g.First())
-                        .ToList();
+                    var telegramBotClient = new TelegramBotClient(telegramBotConfiguration.Token);
 
-                    foreach (var select in picks)
-                    {
-                        int affected = await dbContext.Messages
-                            .Where(m => m.Id == select.Id && !m.IsSent)
-                            .ExecuteUpdateAsync(s => s
-                                .SetProperty(m => m.IsSent, true)
-                                .SetProperty(m => m.SentAt, DateTime.UtcNow),
-                                stoppingToken);
+                    await telegramBotClient.SendMessage(
+                        chatId: telegramBotConfiguration.ChannelId,
+                        text: randomMessage.Text);
 
-                        if (affected == 0) continue;
-
-                        bool sentOk = false;
-                        try
-                        {
-                            string token = await dbContext.TelegramBotConfigurations
-                                .Where(b => b.Id == select.TelegramBotConfigurationId)
-                                .Select(b => b.Token)
-                                .FirstAsync(stoppingToken);
-
-                            TelegramBotClient client = new Telegram.Bot.TelegramBotClient(token);
-
-                            await client.SendMessage(
-                                chatId: select.ChatId,
-                                text: select.Text ?? string.Empty,
-                                cancellationToken: stoppingToken);
-
-                            sentOk = true;
-                        }
-
-                        catch (Exception ex)
-                        {
-                            Console.WriteLine($"[MessageSender] send failed: {ex.Message} " +
-                                $"(bot:{select.TelegramBotConfigurationId}, chat:{select.ChatId})");
-                        }
-
-                        if (!sentOk)
-                        {
-                            await dbContext.Messages
-                                .Where(m => m.Id == select.Id)
-                                .ExecuteUpdateAsync(s => s
-                                    .SetProperty(m => m.IsSent, false)
-                                    .SetProperty(m => m.SentAt, (DateTime?)null),
-                                    stoppingToken);
-                        }
-
-                        await Task.Delay(intervalBetweenSends, stoppingToken);
-                    }
-
-                    await Task.Delay(intervalBetweenCycles, stoppingToken);
+                    randomMessage.IsSent = true;
+                    randomMessage.SentAt = DateTimeOffset.UtcNow;
+                    await this.messageService.ModifyMessageAsync(randomMessage);
                 }
-                catch (TaskCanceledException) { }
-                catch (Exception ex)
+                catch (Exception exception)
                 {
-                    Console.WriteLine($"[MessageSender] Error: {ex.Message}");
-                    await Task.Delay(TimeSpan.FromSeconds(10), stoppingToken);
+                    Console.WriteLine(exception);
                 }
             }
         }

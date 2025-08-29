@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace GhostText.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250827190809_AddMessagesTableChatId")]
-    partial class AddMessagesTableChatId
+    [Migration("20250829150330_AddInitialTables")]
+    partial class AddInitialTables
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -31,10 +31,7 @@ namespace GhostText.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<long>("ChatId")
-                        .HasColumnType("bigint");
-
-                    b.Property<DateTime>("CreateDate")
+                    b.Property<DateTimeOffset>("CreateDate")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<bool>("IsSent")
@@ -42,7 +39,7 @@ namespace GhostText.Migrations
                         .HasColumnType("boolean")
                         .HasDefaultValue(false);
 
-                    b.Property<DateTime?>("SentAt")
+                    b.Property<DateTimeOffset?>("SentAt")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<Guid>("TelegramBotConfigurationId")

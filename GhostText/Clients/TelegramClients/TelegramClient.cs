@@ -57,14 +57,21 @@ namespace GhostText.Clients.TelegramClients
             Update update,
             CancellationToken token)
         {
-            if (update.Type != UpdateType.Message || update.Message is null)
-                return;
+            if (update.Type != UpdateType.Message || string.IsNullOrWhiteSpace(update.Message?.Text))
+            {
+                await telegramBotClient.SendMessage(
+                   chatId: update.Message.Chat.Id,
+                   text: "Iltimos menga matnli xabar yuboring.\nMatn uzunligi 15 va 120 belgi oralig'ida bo'lsin!",
+                   cancellationToken: token);
+            }
 
             var message = update.Message;
             string text = message.Text;
 
-            if (string.IsNullOrWhiteSpace(text))
+            if (message.Chat.Type is ChatType.Private)
+            {
                 return;
+            }
 
             long targetChannelId = this.telegramSettings.ChannelId;
 
@@ -74,15 +81,17 @@ namespace GhostText.Clients.TelegramClients
                     chatId: message.Chat.Id,
                     text: "Xush kelibsiz!",
                     cancellationToken: token);
+
                 return;
             }
 
-            if (text.Length > 120)
+            if (text.Length > 120 || text.Length < 15)
             {
                 await telegramBotClient.SendMessage(
                     chatId: message.Chat.Id,
-                    text: "Matn 120 belgidan uzun. Iltimos, qisqartirib yuboring.",
+                    text: "Matn uzunligi 15 va 120 belgi oralig'ida bo'lsin.",
                     cancellationToken: token);
+
                 return;
             }
 
@@ -90,51 +99,31 @@ namespace GhostText.Clients.TelegramClients
             {
                 await telegramBotClient.SendMessage(
                     chatId: message.Chat.Id,
-                    text: "Matnda taqiqlangan so‘z bor.",
+                    text: "Matnda taqiqlangan so‘z bor. Iltimos qaytadan tekshiring!",
                     cancellationToken: token);
+
                 return;
             }
 
-            bool isFromPrivate = message.Chat.Type == ChatType.Private;
-            bool isSameChat = message.Chat.Id == targetChannelId;
-
-            if (isFromPrivate || !isSameChat)
+            var telegramUser = new TelegramUser
             {
-                await telegramBotClient.SendMessage(
-                    chatId: targetChannelId,
-                    text: text,
-                    cancellationToken: token);
-            }
+                Id = Guid.NewGuid(),
+                TelegramId = message.Chat.Id,
+                UserName = message.Chat.Username,
+                FullName = $"{message.Chat.FirstName} {message.Chat.LastName}"
+            };
 
-            bool isInbound;
+            await telegramUserService.EnsureTelegramUserAsync(telegramUser);
 
-            if (message.From is null)
-                isInbound = true;
-            else if (message.From.IsBot)
-                isInbound = false;
-            else
-                isInbound = true;
-
-            if (isInbound)
+            var telegramMessage = new Models.Message
             {
-                var telegramUser = new TelegramUser
-                {
-                    TelegramId = message.From!.Id,
-                    UserName = message.From.Username ?? "NoUsername",
-                };
-                await telegramUserService.EnsureTelegramUserAsync(telegramUser);
+                Id = Guid.NewGuid(),
+                Text = text,
+                CreateDate = DateTimeOffset.UtcNow,
+                TelegramBotConfigurationId = this.telegramBotConfigurationId
+            };
 
-                var telegramMessage = new Models.Message
-                {
-                    Id = Guid.NewGuid(),
-                    Text = text,
-                    CreateDate = DateTime.UtcNow,
-                    TelegramBotConfigurationId = this.telegramBotConfigurationId,
-                    ChatId = targetChannelId
-                };
-
-                await messageService.AddMessageAsync(telegramMessage);
-            }
+            await messageService.AddMessageAsync(telegramMessage);
         }
 
         private Task HandleErrorAsync(

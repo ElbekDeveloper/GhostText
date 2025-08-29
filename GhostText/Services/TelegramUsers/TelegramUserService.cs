@@ -20,9 +20,6 @@ namespace GhostText.Services
             if (telegramUser is null)
                 throw new ArgumentNullException(nameof(telegramUser), "TelegramUser cannot be null.");
 
-            if (string.IsNullOrWhiteSpace(telegramUser.UserName))
-                throw new ArgumentException("Username cannot be empty.");
-
             return await this.telegramUserRepository.InsertTelegramUserAsync(telegramUser);
         } 
 
