@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace GhostText.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250829150330_AddInitialTables")]
+    [Migration("20250904143405_AddInitialTables")]
     partial class AddInitialTables
     {
         /// <inheritdoc />
