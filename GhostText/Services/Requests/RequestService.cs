@@ -13,12 +13,13 @@ public class RequestService: IRequestService
     public RequestService(ILevenshteinService levenshteinService)
     {
         this.levenshteinService = levenshteinService;
-        
-        this.dictionary = File.ReadAllLines(
-                Path.Combine("E://TestFiles", "yomonSoz.txt"))
-            .Select(x => x.Trim().ToLowerInvariant())
-            .Where(x => !string.IsNullOrWhiteSpace(x))
-            .ToList();
+
+        this.dictionary = new();
+        // File.ReadAllLines(
+        //     Path.Combine("E://TestFiles", "yomonSoz.txt"))
+        // .Select(x => x.Trim().ToLowerInvariant())
+        // .Where(x => !string.IsNullOrWhiteSpace(x))
+        // .ToList();
     }
     
     public bool ContainsForbiddenWord(string messageText)
