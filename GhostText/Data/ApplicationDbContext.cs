@@ -14,7 +14,7 @@ namespace GhostText.Data
         public ApplicationDbContext(IConfiguration configuration)
         {
             this.configuration = configuration;
-            this.Database.Migrate();
+            // this.Database.Migrate();
         }
 
 
