@@ -11,8 +11,12 @@ namespace GhostText.Data
     {
         private readonly IConfiguration configuration;
 
-        public ApplicationDbContext(IConfiguration configuration) =>
+        public ApplicationDbContext(IConfiguration configuration)
+        {
             this.configuration = configuration;
+            this.Database.Migrate();
+        }
+
 
         public DbSet<Message> Messages { get; set; }
         public DbSet<TelegramUser> TelegramUsers { get; set; }
@@ -22,7 +26,7 @@ namespace GhostText.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-            
+
             modelBuilder.Entity<TelegramUser>()
                 .HasIndex(user => user.TelegramId)
                 .IsUnique(true);
@@ -46,7 +50,7 @@ namespace GhostText.Data
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            string connectionString = 
+            string connectionString =
                 this.configuration.GetConnectionString("DefaultConnection");
 
             optionsBuilder.UseNpgsql(connectionString);
