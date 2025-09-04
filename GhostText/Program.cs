@@ -49,10 +49,10 @@ builder.Services.AddScheduler();
 
 WebApplication app = builder.Build();
 
+app.MapScalarApiReference();
+app.MapOpenApi();
 if (app.Environment.IsDevelopment())
 {
-    app.MapOpenApi();
-    app.MapScalarApiReference();
 }
 
 app.Services.UseScheduler(scheduler =>
