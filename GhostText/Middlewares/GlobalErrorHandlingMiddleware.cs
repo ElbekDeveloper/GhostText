@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using System;
-using System.Diagnostics.Metrics;
 using System.Threading.Tasks;
 
 namespace GhostText.Middlewares
@@ -41,7 +40,7 @@ namespace GhostText.Middlewares
                 {
                     NotFoundException => exception.Message,
                     ValidationException => exception.Message,
-                    _ => "An unexpected error occurred."
+                    _ => exception.Message
                 };
 
                 contex.Response.StatusCode = statusCode;

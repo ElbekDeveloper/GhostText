@@ -36,7 +36,7 @@ namespace GhostText.Middlewares
             {
                 NotFoundException => exception.Message,
                 ValidationException => exception.Message,
-                _ => "An unexpected error occurred."
+                _ => exception.Message
             };
 
             var problemDetails = new ProblemDetails
