@@ -1,9 +1,11 @@
 ﻿using GhostText.Models;
+using GhostText.Models.BadWord;
 using GhostText.Models.TelegramBotConfigurations;
 using GhostText.Models.Users;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.Extensions.Configuration;
+using System.Collections.Generic;
 
 namespace GhostText.Data
 {
@@ -18,6 +20,7 @@ namespace GhostText.Data
         public DbSet<TelegramUser> TelegramUsers { get; set; }
         public DbSet<TelegramBotConfiguration> TelegramBotConfigurations { get; set; }
         public DbSet<User> Users { get; set; }
+        public DbSet<BadWord> BadWords { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

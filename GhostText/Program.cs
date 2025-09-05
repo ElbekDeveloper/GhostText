@@ -63,6 +63,9 @@ app.Services.UseScheduler(scheduler =>
 
     scheduler.Schedule<RandomMessageSenderService>()
         .EveryFiveMinutes().PreventOverlapping(nameof(RandomMessageSenderService));
+
+    scheduler.Schedule<TelegramBotBackgroundService>()
+    .EverySecond().PreventOverlapping(nameof(TelegramBotBackgroundService));
 });
 
 app.UseMiddleware<GlobalErrorHandlingMiddleware>();

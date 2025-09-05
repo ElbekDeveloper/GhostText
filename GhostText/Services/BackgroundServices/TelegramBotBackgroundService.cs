@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Coravel.Invocable;
 using GhostText.Models;
 using GhostText.Repositories;
+using Microsoft.EntityFrameworkCore;
 
 namespace GhostText.Services.BackgroundServices;
 
@@ -23,9 +24,9 @@ public class TelegramBotBackgroundService : IInvocable
         {
             IQueryable<Message> messages = this.messageRepository.SelectAllMessages();
 
-            List<Message> oldMessages = messages
-                .Where(m => m.CreateDate <= DateTimeOffset.UtcNow.AddDays(-2))
-                .ToList();
+            List<Message> oldMessages = await messages
+                .Where(m => m.CreateDate <= DateTimeOffset.UtcNow.AddMinutes(-2))
+                .ToListAsync();
 
             if (oldMessages.Any())
             {

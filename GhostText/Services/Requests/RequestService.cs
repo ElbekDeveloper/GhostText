@@ -1,8 +1,10 @@
+using GhostText.Data;
+using GhostText.Services.Levenshteins;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using GhostText.Services.Levenshteins;
+using System.Text;
 
 namespace GhostText.Services.Requests;
 public class RequestService: IRequestService
@@ -10,17 +12,15 @@ public class RequestService: IRequestService
     private readonly ILevenshteinService levenshteinService;
     private readonly List<string> dictionary;
 
-    public RequestService(ILevenshteinService levenshteinService)
+    public RequestService(ILevenshteinService levenshteinService, ApplicationDbContext db)
     {
         this.levenshteinService = levenshteinService;
-        
-        this.dictionary = File.ReadAllLines(
-                Path.Combine("E://TestFiles", "yomonSoz.txt"))
-            .Select(x => x.Trim().ToLowerInvariant())
-            .Where(x => !string.IsNullOrWhiteSpace(x))
-            .ToList();
+
+        this.dictionary = db.BadWords
+                .Select(x => Encoding.UTF8.GetString(x.WordBytes).ToLowerInvariant())
+                .ToList();
     }
-    
+
     public bool ContainsForbiddenWord(string messageText)
     {
         if (string.IsNullOrWhiteSpace(messageText))

@@ -61,76 +61,77 @@ namespace GhostText.Clients.TelegramClients
             {
                 await telegramBotClient.SendMessage(
                    chatId: update.Message.Chat.Id,
-                   text: "Iltimos menga matnli xabar yuboring.\nMatn uzunligi 15 va 120 belgi oralig'ida bo'lsin!",
+                   text: "Iltimos menga matnli xabar yuboring ✍\nMatn uzunligi 15 va 120 belgi oralig'ida bo'lsin ❗",
                    cancellationToken: token);
             }
-
-            var message = update.Message;
-            string text = message.Text;
-
-            if (message.Chat.Type is not ChatType.Private)
+            else
             {
-                return;
-            }
+                var message = update.Message;
+                string text = message.Text;
 
-            long targetChannelId = this.telegramSettings.ChannelId;
+                if (message.Chat.Type is not ChatType.Private)
+                {
+                    return;
+                }
 
-            if (text.StartsWith("/start", StringComparison.OrdinalIgnoreCase))
-            {
+                long targetChannelId = this.telegramSettings.ChannelId;
+
+                if (text.StartsWith("/start", StringComparison.OrdinalIgnoreCase))
+                {
+                    await telegramBotClient.SendMessage(
+                        chatId: message.Chat.Id,
+                        text: "Xush kelibsiz ✌😉",
+                        cancellationToken: token);
+
+                    return;
+                }
+
+                if (text.Length > 120 || text.Length < 15)
+                {
+                    await telegramBotClient.SendMessage(
+                        chatId: message.Chat.Id,
+                        text: "Matn uzunligi 15 va 120 belgi oralig'ida bo'lsin ✍",
+                        cancellationToken: token);
+
+                    return;
+                }
+
+                if (requestService.ContainsForbiddenWord(text))
+                {
+                    await telegramBotClient.SendMessage(
+                        chatId: message.Chat.Id,
+                        text: "Matnda taqiqlangan so‘z bor \n❌❌❌.\nIltimos qaytadan tekshirib xabar yuboring ✍",
+                        cancellationToken: token);
+
+                    return;
+                }
+
+                var telegramUser = new TelegramUser
+                {
+                    Id = Guid.NewGuid(),
+                    TelegramId = message.Chat.Id,
+                    UserName = message.Chat.Username,
+                    FullName = $"{message.Chat.FirstName} {message.Chat.LastName}"
+                };
+
+                await telegramUserService.EnsureTelegramUserAsync(telegramUser);
+
+                var telegramMessage = new Models.Message
+                {
+                    Id = Guid.NewGuid(),
+                    Text = text,
+                    CreateDate = DateTimeOffset.UtcNow,
+                    TelegramBotConfigurationId = this.telegramBotConfigurationId
+                };
+
+                await messageService.AddMessageAsync(telegramMessage);
+
                 await telegramBotClient.SendMessage(
-                    chatId: message.Chat.Id,
-                    text: "Xush kelibsiz!",
-                    cancellationToken: token);
-
-                return;
+                        chatId: message.Chat.Id,
+                        text: "Xabaringiz qabul qilindi tez orada kanalda chiqadi✌😉\nKanal havolasi botimiz proflida ✔",
+                        cancellationToken: token);
             }
-
-            if (text.Length > 120 || text.Length < 15)
-            {
-                await telegramBotClient.SendMessage(
-                    chatId: message.Chat.Id,
-                    text: "Matn uzunligi 15 va 120 belgi oralig'ida bo'lsin.",
-                    cancellationToken: token);
-
-                return;
-            }
-
-            if (requestService.ContainsForbiddenWord(text))
-            {
-                await telegramBotClient.SendMessage(
-                    chatId: message.Chat.Id,
-                    text: "Matnda taqiqlangan so‘z bor. Iltimos qaytadan tekshiring!",
-                    cancellationToken: token);
-
-                return;
-            }
-
-            var telegramUser = new TelegramUser
-            {
-                Id = Guid.NewGuid(),
-                TelegramId = message.Chat.Id,
-                UserName = message.Chat.Username,
-                FullName = $"{message.Chat.FirstName} {message.Chat.LastName}"
-            };
-
-            await telegramUserService.EnsureTelegramUserAsync(telegramUser);
-
-            var telegramMessage = new Models.Message
-            {
-                Id = Guid.NewGuid(),
-                Text = text,
-                CreateDate = DateTimeOffset.UtcNow,
-                TelegramBotConfigurationId = this.telegramBotConfigurationId
-            };
-
-            await messageService.AddMessageAsync(telegramMessage);
-
-            await telegramBotClient.SendMessage(
-                    chatId: message.Chat.Id,
-                    text: "Qabul qilindi tez orada kanalda chiqadi!",
-                    cancellationToken: token);
         }
-
         private Task HandleErrorAsync(
             ITelegramBotClient telegramBotClient,
             Exception exception,
