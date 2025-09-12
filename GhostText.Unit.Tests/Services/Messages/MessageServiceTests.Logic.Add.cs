@@ -11,10 +11,15 @@ namespace GhostText.Unit.Tests.Services.Messages
         public async Task ShouldAddMessageAsync()
         {
             // given
-            Message randomMessage = CreateRandomMessage();
+            DateTimeOffset randomDateTimeOffset = GetRandomDateTimeOffset();
+            Message randomMessage = CreateRandomMessage(randomDateTimeOffset);
             Message inputMessage = randomMessage;
             Message persistedMessage = inputMessage;
             Message expectedMessage = persistedMessage.DeepClone();
+
+            this.dateTimeRepositoryMock.Setup(repository =>
+                repository.GetCurrentDateTime())
+                    .Returns(randomDateTimeOffset);
 
             this.messageRepositoryMock.Setup(repository =>
                 repository.InsertMessageAsync(inputMessage))
@@ -25,13 +30,17 @@ namespace GhostText.Unit.Tests.Services.Messages
                 await this.messageService.AddMessageAsync(inputMessage);
 
             // then
-            actualMessage.Should().BeEquivalentTo(expectedMessage, option =>
-                option.Excluding(message => message.CreateDate));
+            actualMessage.Should().BeEquivalentTo(expectedMessage);
+
+            this.dateTimeRepositoryMock.Verify(repository =>
+                repository.GetCurrentDateTime(),
+                    Times.Once);
 
             this.messageRepositoryMock.Verify(repository =>
                 repository.InsertMessageAsync(inputMessage),
-                    Times.Never);
+                    Times.Once);
 
+            this.dateTimeRepositoryMock.VerifyNoOtherCalls();
             this.messageRepositoryMock.VerifyNoOtherCalls();
         }
     }

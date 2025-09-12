@@ -4,16 +4,21 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using GhostText.Models;
 using GhostText.Repositories;
+using GhostText.Repositories.DateTimes;
 
 namespace GhostText.Services
 {
     public class MessageService : IMessageService
     {
         private readonly IMessageRepository messageRepository;
+        private readonly IDateTimeRepository dateTimeRepository;
 
-        public MessageService(IMessageRepository messageRepository)
+        public MessageService(
+            IMessageRepository messageRepository, 
+            IDateTimeRepository dateTimeRepository)
         {
             this.messageRepository = messageRepository;
+            this.dateTimeRepository = dateTimeRepository;
         }
 
         public async ValueTask<Message> AddMessageAsync(Message message)
@@ -24,7 +29,7 @@ namespace GhostText.Services
             if(message.Text.Length > 120 || message.Text.Length < 15)
                 throw new ArgumentException("Messge length should be between 15 and 120");
 
-            message.CreateDate = DateTimeOffset.UtcNow;
+            message.CreateDate = this.dateTimeRepository.GetCurrentDateTime();
 
             return await this.messageRepository.InsertMessageAsync(message);
         }
