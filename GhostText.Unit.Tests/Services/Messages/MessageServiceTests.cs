@@ -56,6 +56,18 @@ namespace GhostText.Unit.Tests.Services.Messages
             };
         }
 
+        private static int GetRandomNumber() =>
+            new IntRange(min: 2, max: 9).GetValue();
+
+        private static IQueryable<Message> CreateRandomMessages()
+        {
+            int randomCount = GetRandomNumber();
+
+            return CreateMessageFiller(GetRandomDateTimeOffset())
+                .Create(randomCount)
+                    .AsQueryable();
+        }
+
         private static Message CreateRandomMessage(DateTimeOffset dates) =>
             CreateMessageFiller(dates).Create();
 
