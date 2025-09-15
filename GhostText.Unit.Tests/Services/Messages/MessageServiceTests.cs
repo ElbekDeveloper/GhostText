@@ -35,6 +35,9 @@ namespace GhostText.Unit.Tests.Services.Messages
               ).GetValue();
         }
 
+        private static Guid GetRandomId() =>
+            Guid.NewGuid();
+
         public static TheoryData<string> CreateInvalidTexts()
         {
             string smallText = new MnemonicString(
