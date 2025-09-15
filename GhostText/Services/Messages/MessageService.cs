@@ -53,7 +53,10 @@ namespace GhostText.Services
 
         public async ValueTask<Message> ModifyMessageAsync(Message message)
         {
-            throw new NotImplementedException();
+            Message maybeMessage =
+                await this.messageRepository.SelectMessageByIdAsync(message.Id);
+
+            return await this.messageRepository.UpdateMessageAsync(message);
         }
 
         public async ValueTask<Message> RemoveMessageByIdAsync(Guid messageId)
