@@ -39,6 +39,9 @@ namespace GhostText.Services
 
         public async ValueTask<Message> RetrieveMessageByIdAsync(Guid messageId)
         {
+            if(messageId == Guid.Empty)
+                throw new ArgumentException("Message id is required."); 
+
             return await this.messageRepository.SelectMessageByIdAsync(messageId);
         }
 
