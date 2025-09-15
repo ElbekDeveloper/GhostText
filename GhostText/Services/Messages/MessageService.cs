@@ -53,15 +53,7 @@ namespace GhostText.Services
 
         public async ValueTask<Message> ModifyMessageAsync(Message message)
         {
-            if (message is null)
-                throw new ArgumentNullException(nameof(message), "Message cannot be null");
-
-            Message existingMessage = await this.messageRepository.SelectMessageByIdAsync(message.Id);
-
-            if (existingMessage is null)
-                throw new KeyNotFoundException($"Message with Id {message.Id} not found.");
-
-            return await this.messageRepository.UpdateMessageAsync(message);
+            throw new NotImplementedException();
         }
 
         public async ValueTask<Message> RemoveMessageByIdAsync(Guid messageId)
