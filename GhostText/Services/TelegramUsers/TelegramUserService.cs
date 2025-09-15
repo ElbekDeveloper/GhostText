@@ -18,7 +18,7 @@ namespace GhostText.Services
         public async ValueTask<TelegramUser> AddTelegramUserAsync(TelegramUser telegramUser) 
         {
             if (telegramUser is null)
-                throw new ArgumentNullException(nameof(telegramUser), "TelegramUser cannot be null.");
+                throw new ArgumentNullException("TelegramUser cannot be null.");
 
             return await this.telegramUserRepository.InsertTelegramUserAsync(telegramUser);
         } 
