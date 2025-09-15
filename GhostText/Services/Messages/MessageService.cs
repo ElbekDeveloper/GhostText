@@ -59,6 +59,9 @@ namespace GhostText.Services
             Message maybeMessage =
                 await this.messageRepository.SelectMessageByIdAsync(message.Id);
 
+            if(maybeMessage is null)
+                throw new KeyNotFoundException($"Message is not found with given id: {message.Id}.");
+
             return await this.messageRepository.UpdateMessageAsync(message);
         }
 
