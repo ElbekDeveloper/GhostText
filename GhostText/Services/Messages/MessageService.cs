@@ -40,9 +40,15 @@ namespace GhostText.Services
         public async ValueTask<Message> RetrieveMessageByIdAsync(Guid messageId)
         {
             if(messageId == Guid.Empty)
-                throw new ArgumentException("Message id is required."); 
+                throw new ArgumentException("Message id is required.");
 
-            return await this.messageRepository.SelectMessageByIdAsync(messageId);
+            Message maybeMessage =
+                await this.messageRepository.SelectMessageByIdAsync(messageId);
+
+            if(maybeMessage is null)
+                throw new KeyNotFoundException($"Message is not found with given id: {messageId}.");
+
+            return maybeMessage;
         }
 
         public async ValueTask<Message> ModifyMessageAsync(Message message)
