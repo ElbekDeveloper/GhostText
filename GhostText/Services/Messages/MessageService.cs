@@ -53,6 +53,9 @@ namespace GhostText.Services
 
         public async ValueTask<Message> ModifyMessageAsync(Message message)
         {
+            if(message is null)
+                throw new ArgumentException("Message is null.");
+
             Message maybeMessage =
                 await this.messageRepository.SelectMessageByIdAsync(message.Id);
 
