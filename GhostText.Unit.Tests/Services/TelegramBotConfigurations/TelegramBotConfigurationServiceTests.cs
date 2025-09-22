@@ -27,10 +27,7 @@ namespace GhostText.Unit.Tests.Services.TelegramBotConfigurations
         private static string RandomValidToken()=>
             new MnemonicString().GetValue();
 
-        private static DateTimeOffset GetRandomValidCreateDate()=>
-            new DateTimeRange(earliestDate: DateTime.UnixEpoch).GetValue();
-        
-        private static DateTimeOffset GetRandomValidUpdatedDate() =>
+        private static DateTimeOffset GetRandomDateTimeOffset()=>
             new DateTimeRange(earliestDate: DateTime.UnixEpoch).GetValue();
         
         private static int GetRandomNumber() =>
@@ -51,18 +48,8 @@ namespace GhostText.Unit.Tests.Services.TelegramBotConfigurations
             var filler = new Filler<TelegramBotConfiguration>();
 
             filler.Setup()
-                .OnProperty(telegramBotConfiguration =>
-                    telegramBotConfiguration.ChannelId)
-                        .Use(GetRandomValidChannelId())
-                .OnProperty(telegramBotConfiguration =>
-                    telegramBotConfiguration.Token)
-                        .Use(RandomValidToken())
-                .OnProperty(telegrambotConfiguration =>
-                    telegrambotConfiguration.CreatedDate)
-                        .Use(GetRandomValidCreateDate())
-                .OnProperty(telegramBotConfiguration =>
-                    telegramBotConfiguration.UpdatedDate)
-                        .Use(GetRandomValidUpdatedDate());
+                .OnType<DateTimeOffset>()
+                    .Use(GetRandomDateTimeOffset());
             
             return filler;
         }
