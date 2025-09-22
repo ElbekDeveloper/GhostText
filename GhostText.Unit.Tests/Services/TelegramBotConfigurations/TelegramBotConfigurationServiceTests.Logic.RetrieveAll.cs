@@ -10,11 +10,13 @@ namespace GhostText.Unit.Tests.Services.TelegramBotConfigurations
         [Fact]
         public void ShouldRetrieveAllTelegramBotConfigurations()
         {
-            //given
+            // given
             IQueryable<TelegramBotConfiguration> randomTelegramBotConfigurations =
                 CreateRandomTelegramBotConfigurations();
+            
             IQueryable<TelegramBotConfiguration> retrievedTelegramBotConfigurations =
                 randomTelegramBotConfigurations;
+            
             IQueryable<TelegramBotConfiguration> expectedTelegramBotConfigurations =
                 retrievedTelegramBotConfigurations.DeepClone();
             
@@ -22,11 +24,11 @@ namespace GhostText.Unit.Tests.Services.TelegramBotConfigurations
                 repository.SelectAlltelegramBotConfigurations())
                 .Returns(retrievedTelegramBotConfigurations);
             
-            //when
+            // when
             IQueryable<TelegramBotConfiguration> actualTelegramBotConfigurations =
                 this.telegramBotConfigurationService.RetrieveAllTelegramBotConfigurations();
             
-            //then
+            // then
             actualTelegramBotConfigurations.Should().BeEquivalentTo(expectedTelegramBotConfigurations);
             
             this.telegramBotConfigurationRepositoryMock.Verify(repository=>

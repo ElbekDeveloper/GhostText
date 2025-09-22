@@ -10,13 +10,16 @@ namespace GhostText.Unit.Tests.Services.TelegramBotConfigurations
         [Fact]
         public async Task ShouldAddTelegramBotConfigurationAsync()
         {
-            //given
+            // given
             TelegramBotConfiguration randomTelegramBotConfiguration = 
                 CreateRandomTelegramBotConfiguration();
+            
             TelegramBotConfiguration inputTelegramBotConfiguration = 
                 randomTelegramBotConfiguration;
+            
             TelegramBotConfiguration persistedTelegramBotConfiguration = 
                 inputTelegramBotConfiguration;
+            
             TelegramBotConfiguration expectedTelegramBotConfiguration=
                 persistedTelegramBotConfiguration.DeepClone();
             
@@ -24,12 +27,12 @@ namespace GhostText.Unit.Tests.Services.TelegramBotConfigurations
                 repository.InsertChannelAsync(inputTelegramBotConfiguration))
                     .ReturnsAsync(persistedTelegramBotConfiguration);
             
-            //when
+            // when
             TelegramBotConfiguration actualTelegramBotConfiguration =
                 await this.telegramBotConfigurationService
                     .AddTelegramBotConfigurationAsync(inputTelegramBotConfiguration);
             
-            //then
+            // then
             actualTelegramBotConfiguration.Should().BeEquivalentTo(expectedTelegramBotConfiguration);
             
             this.telegramBotConfigurationRepositoryMock.Verify(repository=>
